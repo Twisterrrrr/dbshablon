@@ -68,18 +68,21 @@ function VenuePage() {
               Джаз-клуб Игоря Бутмана
             </span>
           </div>
-          <nav className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
-            <a className="transition-colors hover:text-primary" href="#afisha">Афиша</a>
-            <a className="transition-colors hover:text-primary" href="#club">О клубе</a>
-            <a className="transition-colors hover:text-primary" href="#kitchen">Ресторан</a>
-            <a className="transition-colors hover:text-primary" href="#info">Как добраться</a>
-          </nav>
-          <a
-            href="#afisha"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 lg:ml-8"
-          >
-            Билеты
-          </a>
+          <div className="flex shrink-0 items-center gap-8">
+            <nav className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
+              <a className="transition-colors hover:text-primary" href="#afisha">Афиша</a>
+              <a className="transition-colors hover:text-primary" href="#club">О клубе</a>
+              <a className="transition-colors hover:text-primary" href="#kitchen">Ресторан</a>
+              <a className="transition-colors hover:text-primary" href="#info">Как добраться</a>
+            </nav>
+            <a
+              href="#afisha"
+              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Билеты
+            </a>
+          </div>
+
         </div>
       </header>
 

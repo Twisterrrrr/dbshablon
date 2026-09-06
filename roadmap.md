@@ -1,0 +1,11 @@
+# Roadmap
+
+## Универсальный PDP площадки (Дайбилет)
+
+- [x] Бренд-токены Дайбилет (синий primary, Inter, radius 1rem) вместо «клубной» тёмной темы
+- [x] Универсальный layout: hero split -> касса -> коммерческий центр -> о площадке + галерея -> карта -> FAQ -> отзывы -> похожие
+- [x] Sticky касса: desktop sidebar + mobile bottom bar
+- [x] Варианты по типам: museum, theater, concert_hall, club_bar, pier, park/outdoor, sport, gastro, meeting_point
+- [x] Состояния: есть события / только admission / нет билетов / нет отзывов
+- [x] RU microcopy CTA под каждый вариант
+- [x] Переключатель типа для демонстрации шаблона

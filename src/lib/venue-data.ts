@@ -162,7 +162,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   pier: {
-    label: "Причал /水 водные прогулки",
+    label: "Причал / водные прогулки",
     center: "trips",
     secondaryEvents: false,
     seatMap: false,

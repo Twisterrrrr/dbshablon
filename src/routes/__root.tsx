@@ -77,11 +77,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "АфишаПлюс — билеты на концерты и спектакли" },
-      { name: "description", content: "Агрегатор событий: афиша, билеты онлайн, площадки города." },
-      { name: "author", content: "АфишаПлюс" },
-      { property: "og:title", content: "АфишаПлюс — билеты на концерты и спектакли" },
-      { property: "og:description", content: "Афиша событий, билеты онлайн, площадки города." },
+      { title: "Дайбилет - билеты в музеи, театры и на экскурсии" },
+      { name: "description", content: "Дайбилет: экскурсии, музеи и мероприятия в городах России. Билеты онлайн без наценок." },
+      { name: "author", content: "Дайбилет" },
+      { property: "og:title", content: "Дайбилет - билеты в музеи, театры и на экскурсии" },
+      { property: "og:description", content: "Экскурсии, музеи и мероприятия в городах России." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -91,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
       },
       {
         rel: "stylesheet",
@@ -109,7 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <head>
         <HeadContent />
       </head>

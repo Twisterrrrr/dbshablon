@@ -66,7 +66,7 @@ function Chip({ children, active }: { children: React.ReactNode; active?: boolea
   );
 }
 
-function SectionTitle({ children, link }: { children: React.ReactNode; link?: string }) {
+function SectionTitle({ children, link }: { children: React.ReactNode; link?: string | undefined }) {
   return (
     <div className="flex items-end justify-between gap-4">
       <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{children}</h2>
@@ -981,7 +981,7 @@ function BookingBlock({ venue }: { venue: V }) {
           <Clock className="h-4 w-4 text-primary" /> Средний чек 2 000 руб.
         </span>
       </div>
-      {venue.events.length ? (
+      {venue.events[0] ? (
         <p className="mt-6 text-sm text-muted-foreground">
           Ближайшее событие: <span className="font-semibold text-foreground">{venue.events[0].title}</span>,{" "}
           {venue.events[0].date}

@@ -307,7 +307,7 @@ export type EventItem = {
   tag: string;
   price: string;
   poster: string;
-  extra?: string;
+  extra?: string | undefined;
 };
 
 export type Review = { author: string; date: string; text: string; rating: number };

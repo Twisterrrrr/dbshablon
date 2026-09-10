@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   Star,
@@ -26,28 +26,8 @@ import {
   Minus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TYPE_CONFIG, TYPE_ORDER, VENUES, type VenueType } from "@/lib/venue-data";
+import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType } from "@/lib/venue-data";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Карточка площадки - универсальный шаблон Дайбилет" },
-      {
-        name: "description",
-        content:
-          "Шаблон страницы площадки Дайбилет: музей, театр, концертный зал, клуб, причал, парк, арена, гастроточка и точка сбора - с кассой, афишей, картой и FAQ.",
-      },
-      { property: "og:title", content: "Карточка площадки - шаблон Дайбилет" },
-      {
-        property: "og:description",
-        content: "Универсальный шаблон institution/location с адаптацией под тип площадки.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: VenuePage,
-});
 
 /* ---------- мелкие примитивы ---------- */
 
@@ -114,8 +94,7 @@ function Informer({
 
 /* ---------- страница ---------- */
 
-function VenuePage() {
-  const [type, setType] = useState<VenueType>("museum");
+export function VenuePdp({ type }: { type: VenueType }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const venue = VENUES[type];
   const cfg = TYPE_CONFIG[type];
@@ -163,9 +142,9 @@ function VenuePage() {
           </p>
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
             {TYPE_ORDER.map((t) => (
-              <button
+              <Link
                 key={t}
-                onClick={() => setType(t)}
+                to={TYPE_SLUG[t]}
                 className={cn(
                   "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors",
                   t === type
@@ -174,7 +153,7 @@ function VenuePage() {
                 )}
               >
                 {TYPE_CONFIG[t].label}
-              </button>
+              </Link>
             ))}
           </div>
         </div>

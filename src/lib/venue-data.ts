@@ -832,3 +832,16 @@ export const TYPE_ORDER: VenueType[] = [
   "gastro",
   "meeting_point",
 ];
+
+/** Отдельная страница для каждого типа площадки */
+export const TYPE_SLUG = {
+  museum: "/venues/muzey",
+  theater: "/venues/teatr",
+  concert_hall: "/venues/koncertnyy-zal",
+  club_bar: "/venues/klub",
+  pier: "/venues/prichal",
+  outdoor: "/venues/park",
+  sport: "/venues/arena",
+  gastro: "/venues/gastrotochka",
+  meeting_point: "/venues/tochka-sbora",
+} as const satisfies Record<VenueType, string>;

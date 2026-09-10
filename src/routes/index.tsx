@@ -280,7 +280,7 @@ function VenuePage() {
                   </button>
                 </div>
               </div>
-            </div>
+
 
             {/* ===== Коммерческий центр ===== */}
             <div id="center" className="mt-10 scroll-mt-24">

@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VenuesArenaRouteImport } from './routes/venues.arena'
+import { Route as VenuesGastrotochkaRouteImport } from './routes/venues.gastrotochka'
+import { Route as VenuesKlubRouteImport } from './routes/venues.klub'
+import { Route as VenuesKoncertnyyZalRouteImport } from './routes/venues.koncertnyy-zal'
+import { Route as VenuesMuzeyRouteImport } from './routes/venues.muzey'
+import { Route as VenuesParkRouteImport } from './routes/venues.park'
+import { Route as VenuesPrichalRouteImport } from './routes/venues.prichal'
+import { Route as VenuesTeatrRouteImport } from './routes/venues.teatr'
+import { Route as VenuesTochkaSboraRouteImport } from './routes/venues.tochka-sbora'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VenuesArenaRoute = VenuesArenaRouteImport.update({
+  id: '/venues/arena',
+  path: '/venues/arena',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesGastrotochkaRoute = VenuesGastrotochkaRouteImport.update({
+  id: '/venues/gastrotochka',
+  path: '/venues/gastrotochka',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesKlubRoute = VenuesKlubRouteImport.update({
+  id: '/venues/klub',
+  path: '/venues/klub',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesKoncertnyyZalRoute = VenuesKoncertnyyZalRouteImport.update({
+  id: '/venues/koncertnyy-zal',
+  path: '/venues/koncertnyy-zal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesMuzeyRoute = VenuesMuzeyRouteImport.update({
+  id: '/venues/muzey',
+  path: '/venues/muzey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesParkRoute = VenuesParkRouteImport.update({
+  id: '/venues/park',
+  path: '/venues/park',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesPrichalRoute = VenuesPrichalRouteImport.update({
+  id: '/venues/prichal',
+  path: '/venues/prichal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesTeatrRoute = VenuesTeatrRouteImport.update({
+  id: '/venues/teatr',
+  path: '/venues/teatr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesTochkaSboraRoute = VenuesTochkaSboraRouteImport.update({
+  id: '/venues/tochka-sbora',
+  path: '/venues/tochka-sbora',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/venues/arena': typeof VenuesArenaRoute
+  '/venues/gastrotochka': typeof VenuesGastrotochkaRoute
+  '/venues/klub': typeof VenuesKlubRoute
+  '/venues/koncertnyy-zal': typeof VenuesKoncertnyyZalRoute
+  '/venues/muzey': typeof VenuesMuzeyRoute
+  '/venues/park': typeof VenuesParkRoute
+  '/venues/prichal': typeof VenuesPrichalRoute
+  '/venues/teatr': typeof VenuesTeatrRoute
+  '/venues/tochka-sbora': typeof VenuesTochkaSboraRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/venues/arena': typeof VenuesArenaRoute
+  '/venues/gastrotochka': typeof VenuesGastrotochkaRoute
+  '/venues/klub': typeof VenuesKlubRoute
+  '/venues/koncertnyy-zal': typeof VenuesKoncertnyyZalRoute
+  '/venues/muzey': typeof VenuesMuzeyRoute
+  '/venues/park': typeof VenuesParkRoute
+  '/venues/prichal': typeof VenuesPrichalRoute
+  '/venues/teatr': typeof VenuesTeatrRoute
+  '/venues/tochka-sbora': typeof VenuesTochkaSboraRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/venues/arena': typeof VenuesArenaRoute
+  '/venues/gastrotochka': typeof VenuesGastrotochkaRoute
+  '/venues/klub': typeof VenuesKlubRoute
+  '/venues/koncertnyy-zal': typeof VenuesKoncertnyyZalRoute
+  '/venues/muzey': typeof VenuesMuzeyRoute
+  '/venues/park': typeof VenuesParkRoute
+  '/venues/prichal': typeof VenuesPrichalRoute
+  '/venues/teatr': typeof VenuesTeatrRoute
+  '/venues/tochka-sbora': typeof VenuesTochkaSboraRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/venues/arena'
+    | '/venues/gastrotochka'
+    | '/venues/klub'
+    | '/venues/koncertnyy-zal'
+    | '/venues/muzey'
+    | '/venues/park'
+    | '/venues/prichal'
+    | '/venues/teatr'
+    | '/venues/tochka-sbora'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/venues/arena'
+    | '/venues/gastrotochka'
+    | '/venues/klub'
+    | '/venues/koncertnyy-zal'
+    | '/venues/muzey'
+    | '/venues/park'
+    | '/venues/prichal'
+    | '/venues/teatr'
+    | '/venues/tochka-sbora'
+  id:
+    | '__root__'
+    | '/'
+    | '/venues/arena'
+    | '/venues/gastrotochka'
+    | '/venues/klub'
+    | '/venues/koncertnyy-zal'
+    | '/venues/muzey'
+    | '/venues/park'
+    | '/venues/prichal'
+    | '/venues/teatr'
+    | '/venues/tochka-sbora'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  VenuesArenaRoute: typeof VenuesArenaRoute
+  VenuesGastrotochkaRoute: typeof VenuesGastrotochkaRoute
+  VenuesKlubRoute: typeof VenuesKlubRoute
+  VenuesKoncertnyyZalRoute: typeof VenuesKoncertnyyZalRoute
+  VenuesMuzeyRoute: typeof VenuesMuzeyRoute
+  VenuesParkRoute: typeof VenuesParkRoute
+  VenuesPrichalRoute: typeof VenuesPrichalRoute
+  VenuesTeatrRoute: typeof VenuesTeatrRoute
+  VenuesTochkaSboraRoute: typeof VenuesTochkaSboraRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/venues/arena': {
+      id: '/venues/arena'
+      path: '/venues/arena'
+      fullPath: '/venues/arena'
+      preLoaderRoute: typeof VenuesArenaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/gastrotochka': {
+      id: '/venues/gastrotochka'
+      path: '/venues/gastrotochka'
+      fullPath: '/venues/gastrotochka'
+      preLoaderRoute: typeof VenuesGastrotochkaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/klub': {
+      id: '/venues/klub'
+      path: '/venues/klub'
+      fullPath: '/venues/klub'
+      preLoaderRoute: typeof VenuesKlubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/koncertnyy-zal': {
+      id: '/venues/koncertnyy-zal'
+      path: '/venues/koncertnyy-zal'
+      fullPath: '/venues/koncertnyy-zal'
+      preLoaderRoute: typeof VenuesKoncertnyyZalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/muzey': {
+      id: '/venues/muzey'
+      path: '/venues/muzey'
+      fullPath: '/venues/muzey'
+      preLoaderRoute: typeof VenuesMuzeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/park': {
+      id: '/venues/park'
+      path: '/venues/park'
+      fullPath: '/venues/park'
+      preLoaderRoute: typeof VenuesParkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/prichal': {
+      id: '/venues/prichal'
+      path: '/venues/prichal'
+      fullPath: '/venues/prichal'
+      preLoaderRoute: typeof VenuesPrichalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/teatr': {
+      id: '/venues/teatr'
+      path: '/venues/teatr'
+      fullPath: '/venues/teatr'
+      preLoaderRoute: typeof VenuesTeatrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/tochka-sbora': {
+      id: '/venues/tochka-sbora'
+      path: '/venues/tochka-sbora'
+      fullPath: '/venues/tochka-sbora'
+      preLoaderRoute: typeof VenuesTochkaSboraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  VenuesArenaRoute: VenuesArenaRoute,
+  VenuesGastrotochkaRoute: VenuesGastrotochkaRoute,
+  VenuesKlubRoute: VenuesKlubRoute,
+  VenuesKoncertnyyZalRoute: VenuesKoncertnyyZalRoute,
+  VenuesMuzeyRoute: VenuesMuzeyRoute,
+  VenuesParkRoute: VenuesParkRoute,
+  VenuesPrichalRoute: VenuesPrichalRoute,
+  VenuesTeatrRoute: VenuesTeatrRoute,
+  VenuesTochkaSboraRoute: VenuesTochkaSboraRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

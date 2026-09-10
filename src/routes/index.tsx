@@ -649,7 +649,7 @@ function VenuePage() {
           </div>
 
           {/* ===== Sticky касса (desktop) ===== */}
-          <aside className="hidden lg:block">
+          <aside className="hidden lg:block lg:self-stretch">
             <div className="sticky top-24 space-y-4">
               <Card>
                 {hasTickets ? (
@@ -688,6 +688,82 @@ function VenuePage() {
                     <Ticket className="h-4 w-4 shrink-0 text-success" /> Электронный билет сразу после оплаты
                   </li>
                 </ul>
+              </Card>
+
+              {venue.events.length > 0 ? (
+                <Card>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Ближайшие события
+                  </p>
+                  <ul className="mt-3 space-y-3">
+                    {venue.events.slice(0, 3).map((e) => (
+                      <li key={e.id} className="flex gap-3">
+                        <img
+                          src={e.poster}
+                          alt={e.title}
+                          loading="lazy"
+                          width={300}
+                          height={400}
+                          className="h-14 w-11 shrink-0 rounded-lg object-cover"
+                        />
+                        <div className="min-w-0">
+                          <p className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+                            <CalendarDays className="h-3 w-3 shrink-0" /> {e.date}
+                            <span className="text-muted-foreground">· {e.time}</span>
+                          </p>
+                          <p className="mt-0.5 truncate text-sm font-semibold">{e.title}</p>
+                          <p className="mt-0.5 text-xs font-bold text-foreground">{e.price}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#center"
+                    className="mt-4 flex items-center justify-center gap-1 text-xs font-bold text-primary transition-colors hover:text-accent-foreground"
+                  >
+                    Все события <ChevronRight className="h-3.5 w-3.5" />
+                  </a>
+                </Card>
+              ) : null}
+
+              <Card className="p-4">
+                {venue.rating ? (
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1 text-sm font-bold">
+                      <Star className="h-4 w-4 fill-primary text-primary" />
+                      {venue.rating.value.toFixed(1).replace(".", ",")}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{venue.rating.count} отзывов</span>
+                  </div>
+                ) : (
+                  <p className="text-xs font-semibold text-muted-foreground">Отзывов пока нет</p>
+                )}
+                <ul className="mt-3 space-y-2 border-t border-border pt-3 text-xs text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <Phone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                    <span className="min-w-0 truncate">{venue.phone}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <TrainFront className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                    <span className="min-w-0">{venue.metro}</span>
+                  </li>
+                  {cfg.hours && venue.hours ? (
+                    <li className="flex items-center gap-2 text-success">
+                      <Clock className="h-3.5 w-3.5 shrink-0" /> Сейчас открыто
+                    </li>
+                  ) : null}
+                </ul>
+                <div className="mt-3 flex gap-2">
+                  <button className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border text-xs font-semibold transition-colors hover:bg-muted">
+                    <Heart className="h-3.5 w-3.5" /> В избранное
+                  </button>
+                  <button
+                    aria-label="Поделиться"
+                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-border transition-colors hover:bg-muted"
+                  >
+                    <Share2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </Card>
             </div>
           </aside>

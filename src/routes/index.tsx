@@ -192,24 +192,26 @@ function VenuePage() {
           <span className="text-foreground">{venue.name}</span>
         </nav>
 
-        {/* ===== Hero ===== */}
-        <section className="mt-4 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start 3xl:grid-cols-[minmax(0,1fr)_400px]">
-          <div className="min-w-0">
-            <div className="grid gap-4 md:grid-cols-[minmax(0,420px)_minmax(0,1fr)] 3xl:grid-cols-[minmax(0,520px)_minmax(0,1fr)]">
-              <div className="relative overflow-hidden rounded-2xl bg-muted">
-                <img
-                  src={venue.cover}
-                  alt={`${venue.kindLabel}: ${venue.name}`}
-                  width={1920}
-                  height={1088}
-                  className="h-56 w-full object-cover sm:h-72 md:h-full md:min-h-[280px]"
-                />
-                <span className="absolute left-3 top-3 rounded-lg bg-background/90 px-2 py-1 text-xs font-semibold backdrop-blur">
-                  {venue.gallery.length + 1} фото
-                </span>
-              </div>
+        {/* ===== Hero: широкий баннер ===== */}
+        <section className="mt-4">
+          <div className="relative overflow-hidden rounded-2xl bg-muted">
+            <img
+              src={venue.cover}
+              alt={`${venue.kindLabel}: ${venue.name}`}
+              width={1920}
+              height={1088}
+              className="h-52 w-full object-cover sm:h-80 lg:h-[420px] 3xl:h-[520px]"
+            />
+            <span className="absolute right-3 top-3 rounded-lg bg-background/90 px-2.5 py-1.5 text-xs font-semibold backdrop-blur">
+              {venue.gallery.length + 1} фото
+            </span>
+          </div>
+        </section>
 
+        <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start 3xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="min-w-0">
               <div className="min-w-0">
+
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-lg bg-accent px-2 py-1 text-xs font-semibold text-accent-foreground">
                     {venue.kindLabel}

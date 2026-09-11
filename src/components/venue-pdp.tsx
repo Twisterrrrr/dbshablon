@@ -161,7 +161,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
 
       <main className="mx-auto max-w-[1280px] px-4 pb-28 sm:px-6 lg:pb-16 3xl:max-w-[1680px]">
         {/* ===== Хлебные крошки ===== */}
-        <nav aria-label="Хлебные крошки" className="flex flex-wrap items-center gap-1.5 pt-5 text-xs text-muted-foreground sm:text-sm">
+        <nav aria-label="Хлебные крошки" className="flex flex-wrap items-center gap-1.5 pt-4 text-xs text-muted-foreground sm:text-sm">
           <a href="#" className="hover:text-primary">Главная</a>
           <ChevronRight className="h-3.5 w-3.5" />
           <a href="#" className="hover:text-primary">{venue.city}</a>
@@ -171,95 +171,112 @@ export function VenuePdp({ type }: { type: VenueType }) {
           <span className="text-foreground">{venue.name}</span>
         </nav>
 
-        {/* ===== Hero: широкий баннер ===== */}
+        {/* ===== Hero: баннер с вводными и кассой ===== */}
         <section className="mt-4">
-          <div className="relative overflow-hidden rounded-2xl bg-muted">
+          <div className="relative overflow-hidden rounded-2xl bg-muted pb-5 sm:pb-6 lg:aspect-[21/9] lg:max-h-[560px] lg:pb-0">
             <img
               src={venue.cover}
               alt={`${venue.kindLabel}: ${venue.name}`}
               width={1920}
               height={1088}
-              className="h-52 w-full object-cover sm:h-80 lg:h-[420px] 3xl:h-[520px]"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-            <span className="absolute right-3 top-3 rounded-lg bg-background/90 px-2.5 py-1.5 text-xs font-semibold backdrop-blur">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/25" />
+            <span className="absolute right-3 top-3 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur">
               {venue.gallery.length + 1} фото
             </span>
-          </div>
-        </section>
 
-        <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start 3xl:grid-cols-[minmax(0,1fr)_400px]">
-          <div className="min-w-0">
-              <div className="min-w-0">
-
+            <div className="relative z-10 flex h-full flex-col justify-end gap-5 px-4 pt-24 sm:px-6 lg:flex-row lg:items-end lg:gap-8 lg:px-8 lg:pb-7">
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-lg bg-accent px-2 py-1 text-xs font-semibold text-accent-foreground">
+                  <span className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-foreground">
                     {venue.kindLabel}
                   </span>
                   {venue.age ? (
-                    <span className="rounded-lg bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                    <span className="rounded-lg bg-white/15 px-2 py-1 text-xs font-medium text-white backdrop-blur">
                       {venue.age}
                     </span>
                   ) : null}
                   {venue.rating ? (
-                    <span className="flex items-center gap-1 rounded-lg bg-muted px-2 py-1 text-xs font-semibold">
-                      <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                    <span className="flex items-center gap-1 rounded-lg bg-white/15 px-2 py-1 text-xs font-semibold text-white backdrop-blur">
+                      <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
                       {venue.rating.value.toFixed(1).replace(".", ",")}
-                      <span className="font-normal text-muted-foreground">· {venue.rating.count} отзывов</span>
+                      <span className="font-normal text-white/80">· {venue.rating.count} отзывов</span>
                     </span>
                   ) : (
-                    <span className="rounded-lg bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                    <span className="rounded-lg bg-white/15 px-2 py-1 text-xs font-medium text-white backdrop-blur">
                       Пока нет оценок
                     </span>
                   )}
                   {cfg.hours && venue.hours ? (
-                    <span className="flex items-center gap-1 rounded-lg bg-success/10 px-2 py-1 text-xs font-semibold text-success">
+                    <span className="flex items-center gap-1 rounded-lg bg-success px-2 py-1 text-xs font-semibold text-success-foreground">
                       <Clock className="h-3.5 w-3.5" /> Сейчас открыто
                     </span>
                   ) : null}
                 </div>
 
-                <h1 className="mt-3 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl 3xl:text-4xl">
+                <h1 className="mt-3 text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl 3xl:text-4xl">
                   {venue.name}
                 </h1>
 
-                <div className="mt-4 space-y-2 text-sm">
-                  <p className="flex items-start gap-2 text-muted-foreground">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    {venue.address}, {venue.city}
-                  </p>
-                  <p className="flex items-start gap-2 text-muted-foreground">
-                    <TrainFront className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    {venue.metro}
-                  </p>
-                  <p className="flex items-start gap-2 text-muted-foreground">
-                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    {venue.phone}
-                  </p>
-                  <p className="flex items-start gap-2 text-muted-foreground">
-                    <Globe className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    {venue.site}
-                  </p>
+                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-white/90">
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 shrink-0" /> {venue.address}, {venue.city}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <TrainFront className="h-4 w-4 shrink-0" /> {venue.metro}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Phone className="h-4 w-4 shrink-0" /> {venue.phone}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Globe className="h-4 w-4 shrink-0" /> {venue.site}
+                  </span>
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   <a
                     href="#center"
                     className="rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
                   >
                     {cfg.heroCta}
                   </a>
-                  <button className="flex h-11 items-center gap-2 rounded-xl border border-border px-4 text-sm font-semibold transition-colors hover:bg-muted">
+                  <button className="flex h-11 items-center gap-2 rounded-xl bg-white/15 px-4 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/25">
                     <Heart className="h-4 w-4" /> В избранное
                   </button>
                   <button
                     aria-label="Поделиться"
-                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-border transition-colors hover:bg-muted"
+                    className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur transition-colors hover:bg-white/25"
                   >
                     <Share2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>
 
+              {/* Касса прямо на фото */}
+              <div className="w-full shrink-0 rounded-2xl bg-card p-5 shadow-card lg:w-[320px]">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {hasTickets ? "Билеты на Дайбилет" : "Билеты не нужны"}
+                </p>
+                <p className="mt-1 text-2xl font-extrabold">
+                  {hasTickets ? `от ${venue.priceFrom}` : "Вход свободный"}
+                </p>
+                {hasTickets && venue.nextDate ? (
+                  <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
+                  </p>
+                ) : null}
+                <button className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
+                  {cfg.stickyCta}
+                </button>
+                <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start 3xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="min-w-0">
 
             {/* ===== Коммерческий центр ===== */}
             <div id="center" className="mt-10 scroll-mt-24">

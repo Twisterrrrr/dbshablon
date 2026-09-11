@@ -161,7 +161,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
 
       <main className="mx-auto max-w-[1280px] px-4 pb-28 sm:px-6 lg:pb-16 3xl:max-w-[1680px]">
         {/* ===== Хлебные крошки ===== */}
-        <nav aria-label="Хлебные крошки" className="flex flex-wrap items-center gap-1.5 pt-5 text-xs text-muted-foreground sm:text-sm">
+        <nav aria-label="Хлебные крошки" className="flex flex-wrap items-center gap-1.5 pt-4 text-xs text-muted-foreground sm:text-sm">
           <a href="#" className="hover:text-primary">Главная</a>
           <ChevronRight className="h-3.5 w-3.5" />
           <a href="#" className="hover:text-primary">{venue.city}</a>

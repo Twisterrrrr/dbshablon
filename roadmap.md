@@ -9,5 +9,5 @@
 - [x] Состояния: есть события / только admission / нет билетов / нет отзывов
 - [x] RU microcopy CTA под каждый вариант
 - [x] Переключатель типа для демонстрации шаблона
-- Отдельные страницы по типам: /venues/{muzey,teatr,koncertnyy-zal,klub,prichal,park,arena,gastrotochka,tochka-sbora} — в работе
-- Hero на всю ширину с вводными и кассой прямо на фото — в работе
+- Отдельные страницы по типам: /venues/{muzey,teatr,koncertnyy-zal,klub,prichal,park,arena,gastrotochka,tochka-sbora} — готово
+- Hero на всю ширину с вводными и кассой прямо на фото — готово

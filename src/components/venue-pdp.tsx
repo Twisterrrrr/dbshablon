@@ -253,24 +253,25 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 </div>
               </div>
 
-              {/* Касса прямо на фото */}
-              <div className="w-full shrink-0 rounded-2xl bg-card p-5 shadow-card lg:w-[320px]">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {hasTickets ? "Билеты на Дайбилет" : "Билеты не нужны"}
-                </p>
-                <p className="mt-1 text-2xl font-extrabold">
-                  {hasTickets ? `от ${venue.priceFrom}` : "Вход свободный"}
-                </p>
-                {hasTickets && venue.nextDate ? (
-                  <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
+              {/* Лаконичная касса на фото */}
+              <a
+                href="#center"
+                className="group flex w-full shrink-0 items-center justify-between gap-4 rounded-2xl bg-card p-4 shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
+              >
+                <div>
+                  <p className="text-lg font-extrabold leading-tight">
+                    {hasTickets ? `от ${venue.priceFrom}` : "Вход свободный"}
                   </p>
-                ) : null}
-                <button className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
+                  {hasTickets && venue.nextDate ? (
+                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                      <CalendarDays className="h-3.5 w-3.5 text-primary" /> {venue.nextDate}
+                    </p>
+                  ) : null}
+                </div>
+                <span className="rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
                   {cfg.stickyCta}
-                </button>
-                <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
-              </div>
+                </span>
+              </a>
             </div>
           </div>
         </section>
@@ -678,6 +679,27 @@ export function VenuePdp({ type }: { type: VenueType }) {
                     <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
                   </>
                 )}
+                {venue.admission ? (
+                  <ul className="mt-4 space-y-1 border-t border-border pt-4">
+                    <li className="pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Категории билетов
+                    </li>
+                    {venue.admission.options.map((o) => (
+                      <li key={o.name}>
+                        <a
+                          href="#center"
+                          className="flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-muted"
+                        >
+                          <span className="min-w-0 text-sm">
+                            <span className="block truncate font-semibold">{o.name}</span>
+                            <span className="block truncate text-xs text-muted-foreground">{o.note}</span>
+                          </span>
+                          <span className="shrink-0 text-sm font-bold">{o.price}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
                 <ul className="mt-4 space-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
                   <li className="flex gap-2">
                     <ShieldCheck className="h-4 w-4 shrink-0 text-success" /> Официальные билеты без наценок
@@ -910,19 +932,9 @@ function AdmissionBlock({ venue, cfg }: { venue: V; cfg: C }) {
   return (
     <section>
       <SectionTitle>{a.title}</SectionTitle>
-      <p className="mt-1 text-sm text-muted-foreground">{a.note}</p>
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        {a.options.map((o, i) => (
-          <Card key={o.name} className={cn(i === 0 && "border-primary")}>
-            <p className="text-sm font-bold">{o.name}</p>
-            <p className="mt-1 text-xl font-extrabold">{o.price}</p>
-            <p className="mt-2 text-xs text-muted-foreground">{o.note}</p>
-            <button className="mt-4 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90">
-              {cfg.cardCta}
-            </button>
-          </Card>
-        ))}
-      </div>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {a.note} Категории и цены - в блоке покупки справа.
+      </p>
 
       {venue.exhibitions ? (
         <div className="mt-8">

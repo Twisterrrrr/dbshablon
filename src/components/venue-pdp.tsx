@@ -235,12 +235,14 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <a
-                    href="#center"
-                    className="rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
-                  >
-                    {cfg.heroCta}
-                  </a>
+                  {!hasTickets ? (
+                    <a
+                      href="#center"
+                      className="rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+                    >
+                      {cfg.stickyCta}
+                    </a>
+                  ) : null}
                   <button className="flex h-11 items-center gap-2 rounded-xl bg-white/15 px-4 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/25">
                     <Heart className="h-4 w-4" /> В избранное
                   </button>
@@ -253,25 +255,20 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 </div>
               </div>
 
-              {/* Лаконичная касса на фото */}
-              <a
-                href="#center"
-                className="group flex w-full shrink-0 items-center justify-between gap-4 rounded-2xl bg-card p-4 shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
-              >
-                <div>
-                  <p className="text-lg font-extrabold leading-tight">
-                    {hasTickets ? `от ${venue.priceFrom}` : "Вход свободный"}
+              {/* Лаконичная покупка на фото — только там, где продаются билеты */}
+              {hasTickets ? (
+                <a
+                  href="#center"
+                  className="group flex w-full shrink-0 items-center justify-between gap-4 rounded-xl bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
+                >
+                  <p className="text-sm font-semibold text-muted-foreground">
+                    Цена от <span className="text-base font-extrabold text-foreground">{venue.priceFrom}</span>
                   </p>
-                  {hasTickets && venue.nextDate ? (
-                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                      <CalendarDays className="h-3.5 w-3.5 text-primary" /> {venue.nextDate}
-                    </p>
-                  ) : null}
-                </div>
-                <span className="rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
-                  {cfg.stickyCta}
-                </span>
-              </a>
+                  <span className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
+                    Купить билеты
+                  </span>
+                </a>
+              ) : null}
             </div>
           </div>
         </section>
@@ -650,8 +647,8 @@ export function VenuePdp({ type }: { type: VenueType }) {
           {/* ===== Sticky касса (desktop) ===== */}
           <aside className="hidden lg:block lg:self-stretch">
             <div className="sticky top-24 space-y-4">
-              <Card>
-                {hasTickets ? (
+              {hasTickets ? (
+                <Card>
                   <>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       Билеты на Дайбилет
@@ -667,48 +664,37 @@ export function VenuePdp({ type }: { type: VenueType }) {
                     </button>
                     <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
                   </>
-                ) : (
-                  <>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Билеты не нужны
-                    </p>
-                    <p className="mt-1 text-2xl font-extrabold">Вход свободный</p>
-                    <button className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
-                      {cfg.stickyCta}
-                    </button>
-                    <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
-                  </>
-                )}
-                {venue.admission ? (
-                  <ul className="mt-4 space-y-1 border-t border-border pt-4">
-                    <li className="pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Категории билетов
-                    </li>
-                    {venue.admission.options.map((o) => (
-                      <li key={o.name}>
-                        <a
-                          href="#center"
-                          className="flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-muted"
-                        >
-                          <span className="min-w-0 text-sm">
-                            <span className="block truncate font-semibold">{o.name}</span>
-                            <span className="block truncate text-xs text-muted-foreground">{o.note}</span>
-                          </span>
-                          <span className="shrink-0 text-sm font-bold">{o.price}</span>
-                        </a>
+                  {venue.admission ? (
+                    <ul className="mt-4 space-y-1 border-t border-border pt-4">
+                      <li className="pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Категории билетов
                       </li>
-                    ))}
+                      {venue.admission.options.map((o) => (
+                        <li key={o.name}>
+                          <a
+                            href="#center"
+                            className="flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-muted"
+                          >
+                            <span className="min-w-0 text-sm">
+                              <span className="block truncate font-semibold">{o.name}</span>
+                              <span className="block truncate text-xs text-muted-foreground">{o.note}</span>
+                            </span>
+                            <span className="shrink-0 text-sm font-bold">{o.price}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  <ul className="mt-4 space-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
+                    <li className="flex gap-2">
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-success" /> Официальные билеты без наценок
+                    </li>
+                    <li className="flex gap-2">
+                      <Ticket className="h-4 w-4 shrink-0 text-success" /> Электронный билет сразу после оплаты
+                    </li>
                   </ul>
-                ) : null}
-                <ul className="mt-4 space-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
-                  <li className="flex gap-2">
-                    <ShieldCheck className="h-4 w-4 shrink-0 text-success" /> Официальные билеты без наценок
-                  </li>
-                  <li className="flex gap-2">
-                    <Ticket className="h-4 w-4 shrink-0 text-success" /> Электронный билет сразу после оплаты
-                  </li>
-                </ul>
-              </Card>
+                </Card>
+              ) : null}
 
               {venue.events.length > 0 ? (
                 <Card>
@@ -793,14 +779,14 @@ export function VenuePdp({ type }: { type: VenueType }) {
       {/* ===== Sticky касса (мобильная) ===== */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-1">
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-extrabold">
-              {hasTickets ? `от ${venue.priceFrom}` : "Вход свободный"}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
-          </div>
-          <button className="shrink-0 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">
-            {cfg.stickyCta}
+          {hasTickets ? (
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-extrabold">Цена от {venue.priceFrom}</p>
+              <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
+            </div>
+          ) : null}
+          <button className={cn("shrink-0 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground", !hasTickets && "w-full")}>
+            {hasTickets ? "Купить билеты" : cfg.stickyCta}
           </button>
         </div>
       </div>

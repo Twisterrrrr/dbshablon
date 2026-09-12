@@ -261,9 +261,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                   href="#center"
                   className="group flex w-full shrink-0 items-center justify-between gap-4 rounded-xl bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
                 >
-                  <p className="text-sm font-semibold text-muted-foreground">
-                    Цена от <span className="text-base font-extrabold text-foreground">{venue.priceFrom}</span>
-                  </p>
+                  <span className="text-base font-extrabold text-foreground">{venue.priceFrom}</span>
                   <span className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
                     Купить билеты
                   </span>
@@ -650,10 +648,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <Card>
                   <>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Билеты на Дайбилет
-                    </p>
-                    <p className="mt-1 text-2xl font-extrabold">от {venue.priceFrom}</p>
+                    <p className="text-2xl font-extrabold">{venue.priceFrom}</p>
                     {venue.nextDate ? (
                       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                         <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
@@ -781,7 +776,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
         <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-1">
           {hasTickets ? (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-extrabold">Цена от {venue.priceFrom}</p>
+              <p className="truncate text-sm font-extrabold">{venue.priceFrom}</p>
               <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
             </div>
           ) : null}

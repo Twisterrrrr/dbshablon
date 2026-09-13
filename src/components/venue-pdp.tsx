@@ -172,6 +172,19 @@ export function VenuePdp({ type }: { type: VenueType }) {
   }, []);
 
   // Фильтрация событий по тегу и дате
+  // Клавиатура lightbox: Escape, стрелки
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxIdx(null);
+      if (e.key === "ArrowLeft" && lightboxIdx > 0) setLightboxIdx(lightboxIdx - 1);
+      if (e.key === "ArrowRight" && lightboxIdx < venue.gallery.length - 1)
+        setLightboxIdx(lightboxIdx + 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxIdx, venue.gallery.length]);
+
   const filteredEvents = useMemo(() => {
     let evts = venue.events;
     if (activeFilter !== "Все") evts = evts.filter((e) => e.tag === activeFilter);

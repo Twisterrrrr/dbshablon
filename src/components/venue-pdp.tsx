@@ -944,7 +944,30 @@ function EventCard({ event, cta }: { event: V["events"][number]; cta: string }) 
   );
 }
 
-function EventsBlock({ venue, cfg, filters }: { venue: V; cfg: C; filters: string[] }) {
+type DateStripItem = { date: string; label: string; sub: string };
+
+function EventsBlock({
+  venue,
+  cfg,
+  filters,
+  activeFilter,
+  setActiveFilter,
+  selectedDate,
+  setSelectedDate,
+  dateStrip,
+  filteredEvents,
+}: {
+  venue: V;
+  cfg: C;
+  filters: string[];
+  activeFilter: string;
+  setActiveFilter: (v: string) => void;
+  selectedDate: string | null;
+  setSelectedDate: (v: string | null) => void;
+  dateStrip: DateStripItem[];
+  filteredEvents: V["events"];
+}) {
+  const [showCalendar, setShowCalendar] = useState(false);
   if (venue.events.length === 0) {
     return (
       <Card className="flex flex-col items-center gap-3 py-12 text-center">
@@ -953,7 +976,7 @@ function EventsBlock({ venue, cfg, filters }: { venue: V; cfg: C; filters: strin
         </span>
         <p className="text-sm font-semibold">Пока нет объявленных дат</p>
         <p className="max-w-sm text-sm text-muted-foreground">
-          Подпишитесь - пришлём письмо, как только появится расписание.
+          Подпишитесь — пришлём письмо, как только появится расписание.
         </p>
         <button className="mt-1 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">
           Сообщить о новых датах
@@ -965,22 +988,61 @@ function EventsBlock({ venue, cfg, filters }: { venue: V; cfg: C; filters: strin
     <section>
       <SectionTitle link="Всё расписание">Афиша: {venue.name}</SectionTitle>
       <div className="mt-4 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {filters.map((f, i) => (
-          <Chip key={f} active={i === 0}>
-            {f}
+        {filters.map((f) => (
+          <button key={f} onClick={() => setActiveFilter(f)}>
+            <Chip active={activeFilter === f}>{f}</Chip>
+          </button>
+        ))}
+        <button onClick={() => setShowCalendar((s) => !s)}>
+          <Chip active={showCalendar || selectedDate !== null}>
+            <span className="flex items-center gap-1.5">
+              <CalendarDays className="h-4 w-4" /> {selectedDate ? "Дата выбрана" : "Выбрать дату"}
+            </span>
           </Chip>
-        ))}
-        <Chip>
-          <span className="flex items-center gap-1.5">
-            <CalendarDays className="h-4 w-4" /> Выбрать дату
-          </span>
-        </Chip>
+        </button>
       </div>
-      <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
-        {venue.events.map((e) => (
-          <EventCard key={e.id} event={e} cta={cfg.cardCta} />
-        ))}
-      </ul>
+      {showCalendar ? (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+          {dateStrip.map((d) => (
+            <button
+              key={d.date}
+              onClick={() => setSelectedDate(selectedDate === d.date ? null : d.date)}
+              className={cn(
+                "flex min-w-[60px] shrink-0 flex-col items-center gap-0.5 rounded-xl border px-3 py-2 text-center transition-colors",
+                selectedDate === d.date
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card hover:bg-muted",
+              )}
+            >
+              <span className="text-[11px] font-medium opacity-80">{d.sub}</span>
+              <span className="text-sm font-bold">{d.label}</span>
+            </button>
+          ))}
+          {selectedDate ? (
+            <button
+              onClick={() => setSelectedDate(null)}
+              className="flex shrink-0 items-center gap-1 rounded-xl border border-border px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-muted"
+            >
+              <X className="h-3.5 w-3.5" /> Сбросить
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      {filteredEvents.length === 0 ? (
+        <Card className="mt-5 flex flex-col items-center gap-3 py-10 text-center">
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-muted">
+            <CalendarDays className="h-5 w-5 text-muted-foreground" />
+          </span>
+          <p className="text-sm font-semibold">На выбранных условиях событий нет</p>
+          <p className="text-sm text-muted-foreground">Сбросьте фильтр или дату, чтобы увидеть всё расписание.</p>
+        </Card>
+      ) : (
+        <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
+          {filteredEvents.map((e) => (
+            <EventCard key={e.id} event={e} cta={cfg.cardCta} />
+          ))}
+        </ul>
+      )}
       <button className="mt-6 w-full rounded-xl border border-border py-3 text-sm font-bold transition-colors hover:bg-muted">
         Показать ещё
       </button>

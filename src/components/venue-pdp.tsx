@@ -536,24 +536,42 @@ export function VenuePdp({ type }: { type: VenueType }) {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <img
-                  src={venue.gallery[0]}
-                  alt={`${venue.name}: интерьер`}
-                  loading="lazy"
-                  width={1200}
-                  height={900}
-                  className="col-span-2 aspect-[16/10] w-full rounded-2xl object-cover"
-                />
-                {venue.gallery.slice(1, 3).map((g, i) => (
+                <button
+                  type="button"
+                  onClick={() => setLightboxIdx(0)}
+                  className="col-span-2 group relative overflow-hidden rounded-2xl"
+                >
                   <img
-                    key={g + i}
-                    src={g}
-                    alt={`${venue.name}: фото ${i + 2}`}
+                    src={venue.gallery[0]}
+                    alt={`${venue.name}: интерьер`}
                     loading="lazy"
                     width={1200}
                     height={900}
-                    className="aspect-square w-full rounded-2xl object-cover"
+                    className="aspect-[16/10] w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                   />
+                  <span className="absolute bottom-2 right-2 rounded-lg bg-background/90 px-2.5 py-1 text-xs font-semibold backdrop-blur opacity-0 transition-opacity group-hover:opacity-100">
+                    Увеличить
+                  </span>
+                </button>
+                {venue.gallery.slice(1, 3).map((g, i) => (
+                  <button
+                    type="button"
+                    key={g + i}
+                    onClick={() => setLightboxIdx(i + 1)}
+                    className="group relative overflow-hidden rounded-2xl"
+                  >
+                    <img
+                      src={g}
+                      alt={`${venue.name}: фото ${i + 2}`}
+                      loading="lazy"
+                      width={1200}
+                      height={900}
+                      className="aspect-square w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                    <span className="absolute bottom-2 right-2 rounded-lg bg-background/90 px-2.5 py-1 text-xs font-semibold backdrop-blur opacity-0 transition-opacity group-hover:opacity-100">
+                      Увеличить
+                    </span>
+                  </button>
                 ))}
                 {cfg.hours && venue.hours ? (
                   <Card className="col-span-2 p-4">

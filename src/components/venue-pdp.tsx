@@ -769,7 +769,11 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <Card>
                   <>
-                    <p className="text-2xl font-extrabold">{rangeLabel}</p>
+                    <p className="text-2xl font-extrabold">
+                      {venue.admission && venue.admission.options[selectedCat]
+                        ? venue.admission.options[selectedCat].price
+                        : rangeLabel}
+                    </p>
                     {venue.nextDate ? (
                       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                         <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
@@ -785,18 +789,34 @@ export function VenuePdp({ type }: { type: VenueType }) {
                       <li className="pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         Категории билетов
                       </li>
-                      {venue.admission.options.map((o) => (
+                      {venue.admission.options.map((o, i) => (
                         <li key={o.name}>
-                          <a
-                            href="#center"
-                            className="flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-muted"
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCat(i)}
+                            className={cn(
+                              "flex w-full items-center justify-between gap-3 rounded-lg px-2 py-2 text-left transition-colors",
+                              selectedCat === i ? "bg-primary/10 ring-1 ring-primary" : "hover:bg-muted",
+                            )}
                           >
                             <span className="min-w-0 text-sm">
                               <span className="block truncate font-semibold">{o.name}</span>
                               <span className="block truncate text-xs text-muted-foreground">{o.note}</span>
                             </span>
-                            <span className="shrink-0 text-sm font-bold">{o.price}</span>
-                          </a>
+                            <span className="flex shrink-0 items-center gap-2">
+                              <span className="text-sm font-bold">{o.price}</span>
+                              <span
+                                className={cn(
+                                  "grid h-4 w-4 place-items-center rounded-full border",
+                                  selectedCat === i
+                                    ? "border-primary bg-primary text-primary-foreground"
+                                    : "border-border",
+                                )}
+                              >
+                                {selectedCat === i ? <Check className="h-3 w-3" /> : null}
+                              </span>
+                            </span>
+                          </button>
                         </li>
                       ))}
                     </ul>

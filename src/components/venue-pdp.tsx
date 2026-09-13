@@ -284,10 +284,10 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <a
                   href="#center"
-                  className="group flex w-full shrink-0 items-center justify-between gap-4 rounded-xl bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
+                  className="group flex w-full shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
                 >
-                  <span className="text-base font-extrabold text-foreground">{venue.priceFrom}</span>
-                  <span className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
+                  <span className="text-base font-extrabold text-foreground">от {venue.priceFrom}</span>
+                  <span className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
                     Купить билеты
                   </span>
                 </a>
@@ -673,7 +673,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <Card>
                   <>
-                    <p className="text-2xl font-extrabold">{venue.priceFrom}</p>
+                    <p className="text-2xl font-extrabold">{rangeLabel}</p>
                     {venue.nextDate ? (
                       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                         <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
@@ -801,7 +801,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
         <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-1">
           {hasTickets ? (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-extrabold">{venue.priceFrom}</p>
+              <p className="truncate text-sm font-extrabold">{rangeLabel}</p>
               <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
             </div>
           ) : null}

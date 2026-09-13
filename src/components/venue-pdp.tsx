@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Star,
   MapPin,
@@ -24,16 +24,30 @@ import {
   MessageSquare,
   Plus,
   Minus,
+  X,
+  Check,
+  ChevronLeft,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType } from "@/lib/venue-data";
+import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType, type Venue } from "@/lib/venue-data";
 
 
 /* ---------- мелкие примитивы ---------- */
 
-function Chip({ children, active }: { children: React.ReactNode; active?: boolean }) {
+function Chip({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) {
   return (
     <button
+      type="button"
+      onClick={onClick}
       className={cn(
         "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors sm:text-sm",
         active
@@ -94,6 +108,24 @@ function Informer({
 
 /* ---------- страница ---------- */
 
+/** Извлекает числовое значение из строки цены вроде "от 2 400 руб." -> 2400 */
+function parsePrice(s: string): number | null {
+  const m = s.replace(/\s/g, "").match(/\d+/);
+  return m ? parseInt(m[0], 10) : null;
+}
+
+/** Диапазон min–max из admission-опций или событий */
+function priceRange(venue: Venue): { min: number; max: number; unit: string } | null {
+  const sources: string[] = [];
+  if (venue.admission) sources.push(...venue.admission.options.map((o) => o.price));
+  if (venue.events.length) sources.push(...venue.events.map((e) => e.price));
+  const nums = sources.map(parsePrice).filter((n): n is number => n !== null);
+  if (!nums.length) return null;
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  return { min, max, unit: " руб." };
+}
+
 export function VenuePdp({ type }: { type: VenueType }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const venue = VENUES[type];
@@ -105,6 +137,67 @@ export function VenuePdp({ type }: { type: VenueType }) {
   }, [venue]);
 
   const hasTickets = venue.priceFrom !== null;
+  const range = hasTickets ? priceRange(venue) : null;
+  const rangeLabel =
+    range
+      ? range.min === range.max
+        ? `${range.min.toLocaleString("ru-RU")}${range.unit}`
+        : `${range.min.toLocaleString("ru-RU")} – ${range.max.toLocaleString("ru-RU")}${range.unit}`
+      : null;
+
+  // --- Интерактив: фильтры, календарь, lightbox, категория, подписка ---
+  const [activeFilter, setActiveFilter] = useState("Все");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const [selectedCat, setSelectedCat] = useState(0);
+  const [subscribed, setSubscribed] = useState(false);
+  const [subEmail, setSubEmail] = useState("");
+
+  // Следующие 14 дней для календаря
+  const dateStrip = useMemo(() => {
+    const days: { date: string; label: string; sub: string }[] = [];
+    const months = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+    const wd = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+    const now = new Date();
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() + i);
+      days.push({
+        date: d.toISOString().slice(0, 10),
+        label: `${d.getDate()} ${months[d.getMonth()]}`,
+        sub: i === 0 ? "Сегодня" : i === 1 ? "Завтра" : wd[d.getDay()],
+      });
+    }
+    return days;
+  }, []);
+
+  // Фильтрация событий по тегу и дате
+  // Клавиатура lightbox: Escape, стрелки
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxIdx(null);
+      if (e.key === "ArrowLeft" && lightboxIdx > 0) setLightboxIdx(lightboxIdx - 1);
+      if (e.key === "ArrowRight" && lightboxIdx < venue.gallery.length - 1)
+        setLightboxIdx(lightboxIdx + 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxIdx, venue.gallery.length]);
+
+  const filteredEvents = useMemo(() => {
+    let evts = venue.events;
+    if (activeFilter !== "Все") evts = evts.filter((e) => e.tag === activeFilter);
+    if (selectedDate) {
+      // простое совпадение по числу дня в строке даты события
+      const day = dateStrip.find((d) => d.date === selectedDate);
+      if (day) {
+        const dayNum = day.label.split(" ")[0];
+        evts = evts.filter((e) => e.date.includes(dayNum));
+      }
+    }
+    return evts;
+  }, [venue.events, activeFilter, selectedDate, dateStrip]);
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground">
@@ -259,10 +352,10 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <a
                   href="#center"
-                  className="group flex w-full shrink-0 items-center justify-between gap-4 rounded-xl bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
+                  className="group flex w-full shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
                 >
-                  <span className="text-base font-extrabold text-foreground">{venue.priceFrom}</span>
-                  <span className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
+                  <span className="text-base font-extrabold text-foreground">от {venue.priceFrom}</span>
+                  <span className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
                     Купить билеты
                   </span>
                 </a>
@@ -280,7 +373,17 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 <AdmissionBlock venue={venue} cfg={cfg} />
               ) : null}
               {cfg.center === "events" ? (
-                <EventsBlock venue={venue} cfg={cfg} filters={eventFilters} />
+                <EventsBlock
+                  venue={venue}
+                  cfg={cfg}
+                  filters={eventFilters}
+                  activeFilter={activeFilter}
+                  setActiveFilter={setActiveFilter}
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                  dateStrip={dateStrip}
+                  filteredEvents={filteredEvents}
+                />
               ) : null}
               {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} /> : null}
               {cfg.center === "excursions" ? <ExcursionsBlock venue={venue} /> : null}
@@ -446,24 +549,42 @@ export function VenuePdp({ type }: { type: VenueType }) {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <img
-                  src={venue.gallery[0]}
-                  alt={`${venue.name}: интерьер`}
-                  loading="lazy"
-                  width={1200}
-                  height={900}
-                  className="col-span-2 aspect-[16/10] w-full rounded-2xl object-cover"
-                />
-                {venue.gallery.slice(1, 3).map((g, i) => (
+                <button
+                  type="button"
+                  onClick={() => setLightboxIdx(0)}
+                  className="col-span-2 group relative overflow-hidden rounded-2xl"
+                >
                   <img
-                    key={g + i}
-                    src={g}
-                    alt={`${venue.name}: фото ${i + 2}`}
+                    src={venue.gallery[0]}
+                    alt={`${venue.name}: интерьер`}
                     loading="lazy"
                     width={1200}
                     height={900}
-                    className="aspect-square w-full rounded-2xl object-cover"
+                    className="aspect-[16/10] w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                   />
+                  <span className="absolute bottom-2 right-2 rounded-lg bg-background/90 px-2.5 py-1 text-xs font-semibold backdrop-blur opacity-0 transition-opacity group-hover:opacity-100">
+                    Увеличить
+                  </span>
+                </button>
+                {venue.gallery.slice(1, 3).map((g, i) => (
+                  <button
+                    type="button"
+                    key={g + i}
+                    onClick={() => setLightboxIdx(i + 1)}
+                    className="group relative overflow-hidden rounded-2xl"
+                  >
+                    <img
+                      src={g}
+                      alt={`${venue.name}: фото ${i + 2}`}
+                      loading="lazy"
+                      width={1200}
+                      height={900}
+                      className="aspect-square w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                    <span className="absolute bottom-2 right-2 rounded-lg bg-background/90 px-2.5 py-1 text-xs font-semibold backdrop-blur opacity-0 transition-opacity group-hover:opacity-100">
+                      Увеличить
+                    </span>
+                  </button>
                 ))}
                 {cfg.hours && venue.hours ? (
                   <Card className="col-span-2 p-4">
@@ -648,7 +769,11 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <Card>
                   <>
-                    <p className="text-2xl font-extrabold">{venue.priceFrom}</p>
+                    <p className="text-2xl font-extrabold">
+                      {venue.admission && venue.admission.options[selectedCat]
+                        ? venue.admission.options[selectedCat].price
+                        : rangeLabel}
+                    </p>
                     {venue.nextDate ? (
                       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                         <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
@@ -664,18 +789,34 @@ export function VenuePdp({ type }: { type: VenueType }) {
                       <li className="pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         Категории билетов
                       </li>
-                      {venue.admission.options.map((o) => (
+                      {venue.admission.options.map((o, i) => (
                         <li key={o.name}>
-                          <a
-                            href="#center"
-                            className="flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-muted"
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCat(i)}
+                            className={cn(
+                              "flex w-full items-center justify-between gap-3 rounded-lg px-2 py-2 text-left transition-colors",
+                              selectedCat === i ? "bg-primary/10 ring-1 ring-primary" : "hover:bg-muted",
+                            )}
                           >
                             <span className="min-w-0 text-sm">
                               <span className="block truncate font-semibold">{o.name}</span>
                               <span className="block truncate text-xs text-muted-foreground">{o.note}</span>
                             </span>
-                            <span className="shrink-0 text-sm font-bold">{o.price}</span>
-                          </a>
+                            <span className="flex shrink-0 items-center gap-2">
+                              <span className="text-sm font-bold">{o.price}</span>
+                              <span
+                                className={cn(
+                                  "grid h-4 w-4 place-items-center rounded-full border",
+                                  selectedCat === i
+                                    ? "border-primary bg-primary text-primary-foreground"
+                                    : "border-border",
+                                )}
+                              >
+                                {selectedCat === i ? <Check className="h-3 w-3" /> : null}
+                              </span>
+                            </span>
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -776,7 +917,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
         <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-1">
           {hasTickets ? (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-extrabold">{venue.priceFrom}</p>
+              <p className="truncate text-sm font-extrabold">{rangeLabel}</p>
               <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
             </div>
           ) : null}
@@ -822,6 +963,60 @@ export function VenuePdp({ type }: { type: VenueType }) {
           </p>
         </div>
       </footer>
+
+      {/* ===== Lightbox галерея ===== */}
+      {lightboxIdx !== null ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setLightboxIdx(null)}
+          role="dialog"
+          aria-label="Просмотр фото"
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+            onClick={() => setLightboxIdx(null)}
+            aria-label="Закрыть"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {lightboxIdx > 0 ? (
+            <button
+              type="button"
+              className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIdx(lightboxIdx - 1);
+              }}
+              aria-label="Предыдущее"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+          ) : null}
+          {lightboxIdx < venue.gallery.length - 1 ? (
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIdx(lightboxIdx + 1);
+              }}
+              aria-label="Следующее"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          ) : null}
+          <img
+            src={venue.gallery[lightboxIdx]}
+            alt={`${venue.name}: фото ${lightboxIdx + 1}`}
+            className="max-h-[85vh] max-w-[90vw] rounded-xl object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-white/10 px-3 py-1 text-xs font-semibold text-white">
+            {lightboxIdx + 1} / {venue.gallery.length}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -864,7 +1059,30 @@ function EventCard({ event, cta }: { event: V["events"][number]; cta: string }) 
   );
 }
 
-function EventsBlock({ venue, cfg, filters }: { venue: V; cfg: C; filters: string[] }) {
+type DateStripItem = { date: string; label: string; sub: string };
+
+function EventsBlock({
+  venue,
+  cfg,
+  filters,
+  activeFilter,
+  setActiveFilter,
+  selectedDate,
+  setSelectedDate,
+  dateStrip,
+  filteredEvents,
+}: {
+  venue: V;
+  cfg: C;
+  filters: string[];
+  activeFilter: string;
+  setActiveFilter: (v: string) => void;
+  selectedDate: string | null;
+  setSelectedDate: (v: string | null) => void;
+  dateStrip: DateStripItem[];
+  filteredEvents: V["events"];
+}) {
+  const [showCalendar, setShowCalendar] = useState(false);
   if (venue.events.length === 0) {
     return (
       <Card className="flex flex-col items-center gap-3 py-12 text-center">
@@ -873,7 +1091,7 @@ function EventsBlock({ venue, cfg, filters }: { venue: V; cfg: C; filters: strin
         </span>
         <p className="text-sm font-semibold">Пока нет объявленных дат</p>
         <p className="max-w-sm text-sm text-muted-foreground">
-          Подпишитесь - пришлём письмо, как только появится расписание.
+          Подпишитесь — пришлём письмо, как только появится расписание.
         </p>
         <button className="mt-1 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">
           Сообщить о новых датах
@@ -885,22 +1103,62 @@ function EventsBlock({ venue, cfg, filters }: { venue: V; cfg: C; filters: strin
     <section>
       <SectionTitle link="Всё расписание">Афиша: {venue.name}</SectionTitle>
       <div className="mt-4 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {filters.map((f, i) => (
-          <Chip key={f} active={i === 0}>
+        {filters.map((f) => (
+          <Chip key={f} active={activeFilter === f} onClick={() => setActiveFilter(f)}>
             {f}
           </Chip>
         ))}
-        <Chip>
+        <Chip
+          active={showCalendar || selectedDate !== null}
+          onClick={() => setShowCalendar((s) => !s)}
+        >
           <span className="flex items-center gap-1.5">
-            <CalendarDays className="h-4 w-4" /> Выбрать дату
+            <CalendarDays className="h-4 w-4" /> {selectedDate ? "Дата выбрана" : "Выбрать дату"}
           </span>
         </Chip>
       </div>
-      <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
-        {venue.events.map((e) => (
-          <EventCard key={e.id} event={e} cta={cfg.cardCta} />
-        ))}
-      </ul>
+      {showCalendar ? (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+          {dateStrip.map((d) => (
+            <button
+              key={d.date}
+              onClick={() => setSelectedDate(selectedDate === d.date ? null : d.date)}
+              className={cn(
+                "flex min-w-[60px] shrink-0 flex-col items-center gap-0.5 rounded-xl border px-3 py-2 text-center transition-colors",
+                selectedDate === d.date
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card hover:bg-muted",
+              )}
+            >
+              <span className="text-[11px] font-medium opacity-80">{d.sub}</span>
+              <span className="text-sm font-bold">{d.label}</span>
+            </button>
+          ))}
+          {selectedDate ? (
+            <button
+              onClick={() => setSelectedDate(null)}
+              className="flex shrink-0 items-center gap-1 rounded-xl border border-border px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-muted"
+            >
+              <X className="h-3.5 w-3.5" /> Сбросить
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      {filteredEvents.length === 0 ? (
+        <Card className="mt-5 flex flex-col items-center gap-3 py-10 text-center">
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-muted">
+            <CalendarDays className="h-5 w-5 text-muted-foreground" />
+          </span>
+          <p className="text-sm font-semibold">На выбранных условиях событий нет</p>
+          <p className="text-sm text-muted-foreground">Сбросьте фильтр или дату, чтобы увидеть всё расписание.</p>
+        </Card>
+      ) : (
+        <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
+          {filteredEvents.map((e) => (
+            <EventCard key={e.id} event={e} cta={cfg.cardCta} />
+          ))}
+        </ul>
+      )}
       <button className="mt-6 w-full rounded-xl border border-border py-3 text-sm font-bold transition-colors hover:bg-muted">
         Показать ещё
       </button>

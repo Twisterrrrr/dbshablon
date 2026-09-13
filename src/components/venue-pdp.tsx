@@ -930,6 +930,60 @@ export function VenuePdp({ type }: { type: VenueType }) {
           </p>
         </div>
       </footer>
+
+      {/* ===== Lightbox галерея ===== */}
+      {lightboxIdx !== null ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setLightboxIdx(null)}
+          role="dialog"
+          aria-label="Просмотр фото"
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+            onClick={() => setLightboxIdx(null)}
+            aria-label="Закрыть"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {lightboxIdx > 0 ? (
+            <button
+              type="button"
+              className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIdx(lightboxIdx - 1);
+              }}
+              aria-label="Предыдущее"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+          ) : null}
+          {lightboxIdx < venue.gallery.length - 1 ? (
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIdx(lightboxIdx + 1);
+              }}
+              aria-label="Следующее"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          ) : null}
+          <img
+            src={venue.gallery[lightboxIdx]}
+            alt={`${venue.name}: фото ${lightboxIdx + 1}`}
+            className="max-h-[85vh] max-w-[90vw] rounded-xl object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-white/10 px-3 py-1 text-xs font-semibold text-white">
+            {lightboxIdx + 1} / {venue.gallery.length}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }

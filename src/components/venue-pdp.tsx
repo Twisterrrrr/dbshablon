@@ -94,6 +94,24 @@ function Informer({
 
 /* ---------- страница ---------- */
 
+/** Извлекает числовое значение из строки цены вроде "от 2 400 руб." -> 2400 */
+function parsePrice(s: string): number | null {
+  const m = s.replace(/\s/g, "").match(/\d+/);
+  return m ? parseInt(m[0], 10) : null;
+}
+
+/** Диапазон min–max из admission-опций или событий */
+function priceRange(venue: Venue): { min: number; max: number; unit: string } | null {
+  const sources: string[] = [];
+  if (venue.admission) sources.push(...venue.admission.options.map((o) => o.price));
+  if (venue.events.length) sources.push(...venue.events.map((e) => e.price));
+  const nums = sources.map(parsePrice).filter((n): n is number => n !== null);
+  if (!nums.length) return null;
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  return { min, max, unit: " руб." };
+}
+
 export function VenuePdp({ type }: { type: VenueType }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const venue = VENUES[type];
@@ -105,6 +123,13 @@ export function VenuePdp({ type }: { type: VenueType }) {
   }, [venue]);
 
   const hasTickets = venue.priceFrom !== null;
+  const range = hasTickets ? priceRange(venue) : null;
+  const rangeLabel =
+    range
+      ? range.min === range.max
+        ? `${range.min.toLocaleString("ru-RU")}${range.unit}`
+        : `${range.min.toLocaleString("ru-RU")} – ${range.max.toLocaleString("ru-RU")}${range.unit}`
+      : null;
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground">

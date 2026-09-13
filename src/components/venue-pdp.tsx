@@ -27,7 +27,6 @@ import {
   X,
   Check,
   ChevronLeft,
-  ChevronRight as ChevronRightIcon,
   Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";

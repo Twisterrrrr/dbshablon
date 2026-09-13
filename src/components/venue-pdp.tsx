@@ -135,6 +135,47 @@ export function VenuePdp({ type }: { type: VenueType }) {
         : `${range.min.toLocaleString("ru-RU")} – ${range.max.toLocaleString("ru-RU")}${range.unit}`
       : null;
 
+  // --- Интерактив: фильтры, календарь, lightbox, категория, подписка ---
+  const [activeFilter, setActiveFilter] = useState("Все");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const [selectedCat, setSelectedCat] = useState(0);
+  const [subscribed, setSubscribed] = useState(false);
+  const [subEmail, setSubEmail] = useState("");
+
+  // Следующие 14 дней для календаря
+  const dateStrip = useMemo(() => {
+    const days: { date: string; label: string; sub: string }[] = [];
+    const months = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+    const wd = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+    const now = new Date();
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() + i);
+      days.push({
+        date: d.toISOString().slice(0, 10),
+        label: `${d.getDate()} ${months[d.getMonth()]}`,
+        sub: i === 0 ? "Сегодня" : i === 1 ? "Завтра" : wd[d.getDay()],
+      });
+    }
+    return days;
+  }, []);
+
+  // Фильтрация событий по тегу и дате
+  const filteredEvents = useMemo(() => {
+    let evts = venue.events;
+    if (activeFilter !== "Все") evts = evts.filter((e) => e.tag === activeFilter);
+    if (selectedDate) {
+      // простое совпадение по числу дня в строке даты события
+      const day = dateStrip.find((d) => d.date === selectedDate);
+      if (day) {
+        const dayNum = day.label.split(" ")[0];
+        evts = evts.filter((e) => e.date.includes(dayNum));
+      }
+    }
+    return evts;
+  }, [venue.events, activeFilter, selectedDate, dateStrip]);
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground">
       {/* ===== Шапка маркетплейса ===== */}

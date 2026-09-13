@@ -26,7 +26,7 @@ import {
   Minus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType } from "@/lib/venue-data";
+import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType, type Venue } from "@/lib/venue-data";
 
 
 /* ---------- мелкие примитивы ---------- */

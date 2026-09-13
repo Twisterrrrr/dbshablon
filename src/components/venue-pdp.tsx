@@ -35,9 +35,19 @@ import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType, type Venue 
 
 /* ---------- мелкие примитивы ---------- */
 
-function Chip({ children, active }: { children: React.ReactNode; active?: boolean }) {
+function Chip({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) {
   return (
     <button
+      type="button"
+      onClick={onClick}
       className={cn(
         "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors sm:text-sm",
         active

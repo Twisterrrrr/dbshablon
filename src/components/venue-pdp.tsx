@@ -999,17 +999,18 @@ function EventsBlock({
       <SectionTitle link="Всё расписание">Афиша: {venue.name}</SectionTitle>
       <div className="mt-4 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {filters.map((f) => (
-          <button key={f} onClick={() => setActiveFilter(f)}>
-            <Chip active={activeFilter === f}>{f}</Chip>
-          </button>
-        ))}
-        <button onClick={() => setShowCalendar((s) => !s)}>
-          <Chip active={showCalendar || selectedDate !== null}>
-            <span className="flex items-center gap-1.5">
-              <CalendarDays className="h-4 w-4" /> {selectedDate ? "Дата выбрана" : "Выбрать дату"}
-            </span>
+          <Chip key={f} active={activeFilter === f} onClick={() => setActiveFilter(f)}>
+            {f}
           </Chip>
-        </button>
+        ))}
+        <Chip
+          active={showCalendar || selectedDate !== null}
+          onClick={() => setShowCalendar((s) => !s)}
+        >
+          <span className="flex items-center gap-1.5">
+            <CalendarDays className="h-4 w-4" /> {selectedDate ? "Дата выбрана" : "Выбрать дату"}
+          </span>
+        </Chip>
       </div>
       {showCalendar ? (
         <div className="mt-3 flex gap-2 overflow-x-auto pb-2 no-scrollbar">

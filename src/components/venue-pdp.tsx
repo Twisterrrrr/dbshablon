@@ -24,6 +24,11 @@ import {
   MessageSquare,
   Plus,
   Minus,
+  X,
+  Check,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType, type Venue } from "@/lib/venue-data";

@@ -350,7 +350,17 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 <AdmissionBlock venue={venue} cfg={cfg} />
               ) : null}
               {cfg.center === "events" ? (
-                <EventsBlock venue={venue} cfg={cfg} filters={eventFilters} />
+                <EventsBlock
+                  venue={venue}
+                  cfg={cfg}
+                  filters={eventFilters}
+                  activeFilter={activeFilter}
+                  setActiveFilter={setActiveFilter}
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                  dateStrip={dateStrip}
+                  filteredEvents={filteredEvents}
+                />
               ) : null}
               {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} /> : null}
               {cfg.center === "excursions" ? <ExcursionsBlock venue={venue} /> : null}

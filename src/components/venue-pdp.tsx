@@ -165,7 +165,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
       days.push({
         date: d.toISOString().slice(0, 10),
         label: `${d.getDate()} ${months[d.getMonth()]}`,
-        sub: i === 0 ? "Сегодня" : i === 1 ? "Завтра" : wd[d.getDay()],
+        sub: i === 0 ? "Сегодня" : i === 1 ? "Завтра" : (wd[d.getDay()] ?? ""),
       });
     }
     return days;
@@ -193,7 +193,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
       const day = dateStrip.find((d) => d.date === selectedDate);
       if (day) {
         const dayNum = day.label.split(" ")[0];
-        evts = evts.filter((e) => e.date.includes(dayNum));
+        if (dayNum) evts = evts.filter((e) => e.date.includes(dayNum));
       }
     }
     return evts;

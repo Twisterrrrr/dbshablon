@@ -294,7 +294,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                     <span className="flex items-center gap-1 rounded-lg bg-white/15 px-2 py-1 text-xs font-semibold text-white backdrop-blur">
                       <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
                       {venue.rating.value.toFixed(1).replace(".", ",")}
-                      <span className="font-normal text-white/80">· {venue.rating.count} отзывов</span>
+                      <span className="hidden font-normal text-white/80 sm:inline">· {venue.rating.count} отзывов</span>
                     </span>
                   ) : (
                     <span className="rounded-lg bg-white/15 px-2 py-1 text-xs font-medium text-white backdrop-blur">
@@ -316,13 +316,13 @@ export function VenuePdp({ type }: { type: VenueType }) {
                   <span className="flex items-center gap-1.5">
                     <MapPin className="h-4 w-4 shrink-0" /> {venue.address}, {venue.city}
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="hidden items-center gap-1.5 sm:flex">
                     <TrainFront className="h-4 w-4 shrink-0" /> {venue.metro}
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="hidden items-center gap-1.5 sm:flex">
                     <Phone className="h-4 w-4 shrink-0" /> {venue.phone}
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="hidden items-center gap-1.5 lg:flex">
                     <Globe className="h-4 w-4 shrink-0" /> {venue.site}
                   </span>
                 </div>

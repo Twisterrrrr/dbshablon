@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Star,
   MapPin,
@@ -149,7 +149,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
   const [activeFilter, setActiveFilter] = useState("Все");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
-  const [selectedCat, setSelectedCat] = useState(0);
+  const [selectedCat, setSelectedCat] = useState<number | null>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [subEmail, setSubEmail] = useState("");
 
@@ -165,7 +165,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
       days.push({
         date: d.toISOString().slice(0, 10),
         label: `${d.getDate()} ${months[d.getMonth()]}`,
-        sub: i === 0 ? "Сегодня" : i === 1 ? "Завтра" : wd[d.getDay()],
+        sub: i === 0 ? "Сегодня" : i === 1 ? "Завтра" : (wd[d.getDay()] ?? ""),
       });
     }
     return days;
@@ -193,14 +193,48 @@ export function VenuePdp({ type }: { type: VenueType }) {
       const day = dateStrip.find((d) => d.date === selectedDate);
       if (day) {
         const dayNum = day.label.split(" ")[0];
-        evts = evts.filter((e) => e.date.includes(dayNum));
+        if (dayNum) evts = evts.filter((e) => e.date.includes(dayNum));
       }
     }
     return evts;
   }, [venue.events, activeFilter, selectedDate, dateStrip]);
 
+  const structuredData = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": type === "museum" ? "Museum" : type === "gastro" ? "Restaurant" : "Place",
+      name: venue.name,
+      description: venue.about[0],
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: venue.address,
+        addressLocality: venue.city,
+        addressCountry: "RU",
+      },
+      telephone: venue.phone,
+      url: `https://dbshablon.lovable.app${TYPE_SLUG[type]}`,
+      ...(venue.rating
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: venue.rating.value,
+              reviewCount: venue.rating.count,
+            },
+          }
+        : {}),
+      event: venue.events.map((event) => ({
+        "@type": "Event",
+        name: event.title,
+        location: { "@type": "Place", name: venue.name, address: venue.address },
+        offers: { "@type": "Offer", priceCurrency: "RUB", description: event.price },
+      })),
+    }),
+    [type, venue],
+  );
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       {/* ===== Шапка маркетплейса ===== */}
       <header className="sticky top-0 z-50 border-b border-border bg-card">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 3xl:max-w-[1680px]">
@@ -294,7 +328,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                     <span className="flex items-center gap-1 rounded-lg bg-white/15 px-2 py-1 text-xs font-semibold text-white backdrop-blur">
                       <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
                       {venue.rating.value.toFixed(1).replace(".", ",")}
-                      <span className="font-normal text-white/80">· {venue.rating.count} отзывов</span>
+                      <span className="hidden font-normal text-white/80 sm:inline">· {venue.rating.count} отзывов</span>
                     </span>
                   ) : (
                     <span className="rounded-lg bg-white/15 px-2 py-1 text-xs font-medium text-white backdrop-blur">
@@ -316,13 +350,13 @@ export function VenuePdp({ type }: { type: VenueType }) {
                   <span className="flex items-center gap-1.5">
                     <MapPin className="h-4 w-4 shrink-0" /> {venue.address}, {venue.city}
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="hidden items-center gap-1.5 sm:flex">
                     <TrainFront className="h-4 w-4 shrink-0" /> {venue.metro}
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="hidden items-center gap-1.5 sm:flex">
                     <Phone className="h-4 w-4 shrink-0" /> {venue.phone}
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="hidden items-center gap-1.5 lg:flex">
                     <Globe className="h-4 w-4 shrink-0" /> {venue.site}
                   </span>
                 </div>
@@ -370,7 +404,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
             {/* ===== Коммерческий центр ===== */}
             <div id="center" className="mt-10 scroll-mt-24">
               {cfg.center === "admission" && venue.admission ? (
-                <AdmissionBlock venue={venue} cfg={cfg} />
+                <AdmissionBlock venue={venue} />
               ) : null}
               {cfg.center === "events" ? (
                 <EventsBlock
@@ -669,6 +703,46 @@ export function VenuePdp({ type }: { type: VenueType }) {
               </section>
             ) : null}
 
+            {/* ===== Подписка на новые события ===== */}
+            <section className="mt-12 rounded-2xl bg-muted p-5 sm:p-6">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                <div className="min-w-0">
+                  <p className="flex items-center gap-2 text-base font-bold">
+                    <Mail className="h-5 w-5 shrink-0 text-primary" /> Новые события на этой площадке
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Пришлём письмо, когда появятся новые даты. Без рекламных рассылок.
+                  </p>
+                </div>
+                {subscribed ? (
+                  <p className="flex items-center gap-2 text-sm font-semibold text-success">
+                    <Check className="h-4 w-4" /> Вы подписаны
+                  </p>
+                ) : (
+                  <form
+                    className="flex min-w-0 gap-2"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (subEmail.trim()) setSubscribed(true);
+                    }}
+                  >
+                    <input
+                      type="email"
+                      required
+                      value={subEmail}
+                      onChange={(e) => setSubEmail(e.target.value)}
+                      placeholder="Электронная почта"
+                      aria-label="Электронная почта"
+                      className="h-11 min-w-0 flex-1 rounded-xl border border-border bg-card px-3 text-sm outline-none focus:border-primary sm:w-56"
+                    />
+                    <button className="h-11 shrink-0 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground">
+                      Подписаться
+                    </button>
+                  </form>
+                )}
+              </div>
+            </section>
+
             {/* ===== FAQ ===== */}
             <section className="mt-12">
               <SectionTitle>Частые вопросы</SectionTitle>
@@ -770,7 +844,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 <Card>
                   <>
                     <p className="text-2xl font-extrabold">
-                      {venue.admission && venue.admission.options[selectedCat]
+                      {venue.admission && selectedCat !== null && venue.admission.options[selectedCat]
                         ? venue.admission.options[selectedCat].price
                         : rangeLabel}
                     </p>
@@ -779,7 +853,25 @@ export function VenuePdp({ type }: { type: VenueType }) {
                         <CalendarDays className="h-4 w-4 text-primary" /> Ближайшая дата: {venue.nextDate}
                       </p>
                     ) : null}
-                    <button className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
+                    <div className="mt-4 grid grid-cols-3 gap-1.5">
+                      {dateStrip.slice(0, 3).map((d) => (
+                        <button
+                          type="button"
+                          key={d.date}
+                          onClick={() => setSelectedDate(selectedDate === d.date ? null : d.date)}
+                          className={cn(
+                            "rounded-lg border px-1 py-2 text-center transition-colors",
+                            selectedDate === d.date
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border hover:bg-muted",
+                          )}
+                        >
+                          <span className="block text-[10px] opacity-75">{d.sub}</span>
+                          <span className="block text-xs font-bold">{d.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <button className="mt-3 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
                       {cfg.stickyCta}
                     </button>
                     <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
@@ -1166,17 +1258,11 @@ function EventsBlock({
   );
 }
 
-function AdmissionBlock({ venue, cfg }: { venue: V; cfg: C }) {
-  const a = venue.admission!;
+function AdmissionBlock({ venue }: { venue: V }) {
   return (
     <section>
-      <SectionTitle>{a.title}</SectionTitle>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {a.note} Категории и цены - в блоке покупки справа.
-      </p>
-
       {venue.exhibitions ? (
-        <div className="mt-8">
+        <div>
           <SectionTitle link="Все выставки">Идут сейчас</SectionTitle>
           <ul className="mt-4 flex gap-4 overflow-x-auto pb-2 no-scrollbar sm:grid sm:grid-cols-3 sm:overflow-visible">
             {venue.exhibitions.map((e) => (

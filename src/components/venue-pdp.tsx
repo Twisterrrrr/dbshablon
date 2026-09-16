@@ -28,6 +28,9 @@ import {
   Check,
   ChevronLeft,
   Mail,
+  Bus,
+  Footprints,
+  Navigation,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType, type Venue } from "@/lib/venue-data";
@@ -152,6 +155,22 @@ export function VenuePdp({ type }: { type: VenueType }) {
   const [selectedCat, setSelectedCat] = useState<number | null>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [subEmail, setSubEmail] = useState("");
+  const [checkoutEventId, setCheckoutEventId] = useState<string | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutDate, setCheckoutDate] = useState("");
+  const [checkoutTime, setCheckoutTime] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [orderComplete, setOrderComplete] = useState(false);
+
+  const openCheckout = (eventId?: string) => {
+    const event = venue.events.find((item) => item.id === eventId) ?? venue.events[0];
+    setCheckoutEventId(event?.id ?? null);
+    setCheckoutDate(event?.date ?? venue.nextDate ?? "Открытая дата");
+    setCheckoutTime(event?.time ?? "12:00");
+    setQuantity(1);
+    setOrderComplete(false);
+    setCheckoutOpen(true);
+  };
 
   // Следующие 14 дней для календаря
   const dateStrip = useMemo(() => {
@@ -384,15 +403,16 @@ export function VenuePdp({ type }: { type: VenueType }) {
 
               {/* Лаконичная покупка на фото — только там, где продаются билеты */}
               {hasTickets ? (
-                <a
-                  href="#center"
+                <button
+                  type="button"
+                  onClick={() => openCheckout()}
                   className="group flex w-full shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
                 >
                   <span className="text-base font-extrabold text-foreground">от {venue.priceFrom}</span>
                   <span className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">
                     Купить билеты
                   </span>
-                </a>
+                </button>
               ) : null}
             </div>
           </div>
@@ -417,12 +437,13 @@ export function VenuePdp({ type }: { type: VenueType }) {
                   setSelectedDate={setSelectedDate}
                   dateStrip={dateStrip}
                   filteredEvents={filteredEvents}
+                  onPurchase={openCheckout}
                 />
               ) : null}
-              {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} /> : null}
-              {cfg.center === "excursions" ? <ExcursionsBlock venue={venue} /> : null}
+              {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} onPurchase={openCheckout} /> : null}
+              {cfg.center === "excursions" ? <ExcursionsBlock venue={venue} onPurchase={openCheckout} /> : null}
               {cfg.center === "booking" ? <BookingBlock venue={venue} /> : null}
-              {cfg.center === "logistics" ? <LogisticsBlock venue={venue} cfg={cfg} /> : null}
+              {cfg.center === "logistics" ? <LogisticsBlock venue={venue} cfg={cfg} onPurchase={openCheckout} /> : null}
             </div>
 
             {/* ===== Зоны клуба ===== */}
@@ -641,36 +662,13 @@ export function VenuePdp({ type }: { type: VenueType }) {
             </section>
 
             {/* ===== Информер по типу ===== */}
-            <section className="mt-12 grid gap-4 md:grid-cols-2">
+            <section className="mt-12">
               <Informer title={cfg.rulesTitle} items={cfg.rules} icon={ShieldCheck} />
-              <Informer
-                title="Как добраться"
-                items={[venue.metro, venue.transport, venue.parking]}
-                icon={Car}
-              />
             </section>
 
             {/* ===== Карта ===== */}
             <section className="mt-6">
-              <Card className="p-0 overflow-hidden">
-                <div className="relative h-52 bg-muted sm:h-64">
-                  <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(var(--color-border)_1px,transparent_1px),linear-gradient(90deg,var(--color-border)_1px,transparent_1px)] [background-size:38px_38px]" />
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                    <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-card">
-                      <MapPin className="h-5 w-5" />
-                    </span>
-                    <p className="mt-2 rounded-lg bg-background/90 px-3 py-1 text-xs font-semibold backdrop-blur">
-                      {venue.address}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-3 p-4">
-                  <p className="min-w-0 text-sm text-muted-foreground">{venue.metro}</p>
-                  <button className="rounded-xl border border-border px-4 py-2 text-xs font-bold transition-colors hover:bg-muted">
-                    Построить маршрут
-                  </button>
-                </div>
-              </Card>
+              <RouteMap venue={venue} />
 
               {cfg.wayToFind && venue.wayToFind ? (
                 <Card className="mt-4">
@@ -697,7 +695,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 <SectionTitle link="Все события">События на площадке</SectionTitle>
                 <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4">
                   {venue.events.map((e) => (
-                    <EventCard key={e.id} event={e} cta={cfg.cardCta} />
+                    <EventCard key={e.id} event={e} cta={cfg.cardCta} onPurchase={() => openCheckout(e.id)} />
                   ))}
                 </ul>
               </section>
@@ -871,7 +869,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                         </button>
                       ))}
                     </div>
-                    <button className="mt-3 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
+                    <button onClick={() => openCheckout()} className="mt-3 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
                       {cfg.stickyCta}
                     </button>
                     <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
@@ -1013,7 +1011,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
             </div>
           ) : null}
-          <button className={cn("shrink-0 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground", !hasTickets && "w-full")}>
+          <button onClick={() => hasTickets ? openCheckout() : document.querySelector("#center")?.scrollIntoView({ behavior: "smooth" })} className={cn("shrink-0 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground", !hasTickets && "w-full")}>
             {hasTickets ? "Купить билеты" : cfg.stickyCta}
           </button>
         </div>
@@ -1055,6 +1053,30 @@ export function VenuePdp({ type }: { type: VenueType }) {
           </p>
         </div>
       </footer>
+
+      {checkoutOpen ? (
+        <CheckoutModal
+          venue={venue}
+          eventId={checkoutEventId}
+          date={checkoutDate}
+          time={checkoutTime}
+          quantity={quantity}
+          complete={orderComplete}
+          onEventChange={(id) => {
+            setCheckoutEventId(id);
+            const event = venue.events.find((item) => item.id === id);
+            if (event) {
+              setCheckoutDate(event.date);
+              setCheckoutTime(event.time);
+            }
+          }}
+          onDateChange={setCheckoutDate}
+          onTimeChange={setCheckoutTime}
+          onQuantityChange={setQuantity}
+          onSubmit={() => setOrderComplete(true)}
+          onClose={() => setCheckoutOpen(false)}
+        />
+      ) : null}
 
       {/* ===== Lightbox галерея ===== */}
       {lightboxIdx !== null ? (
@@ -1118,10 +1140,149 @@ export function VenuePdp({ type }: { type: VenueType }) {
 type V = (typeof VENUES)[VenueType];
 type C = (typeof TYPE_CONFIG)[VenueType];
 
-function EventCard({ event, cta }: { event: V["events"][number]; cta: string }) {
+function RouteMap({ venue }: { venue: V }) {
+  const [mode, setMode] = useState<"walk" | "transit" | "car">("transit");
+  const query = venue.mapQuery ?? `${venue.name}, ${venue.address}, ${venue.city}`;
+  const modes = [
+    { id: "walk" as const, label: "Пешком", icon: Footprints },
+    { id: "transit" as const, label: "Транспорт", icon: Bus },
+    { id: "car" as const, label: "На машине", icon: Car },
+  ];
+  const times = venue.travelTimes ?? { walk: "12 мин", transit: "18 мин", car: "24 мин" };
+  const googleMode = mode === "walk" ? "walking" : mode === "transit" ? "transit" : "driving";
+  const mapKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
+  const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
+  const embedUrl = mapKey
+    ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(mapKey)}&q=${encodeURIComponent(query)}`
+    : null;
+  const routeUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}&travelmode=${googleMode}`;
+
+  return (
+    <Card className="overflow-hidden p-0">
+      <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="h-64 bg-muted sm:h-80">
+          {embedUrl ? (
+            <iframe
+              title={`Карта: ${venue.name}`}
+              src={trackingId ? `${embedUrl}&channel=${encodeURIComponent(trackingId)}` : embedUrl}
+              className="h-full w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          ) : (
+            <div className="grid h-full place-items-center px-6 text-center text-sm text-muted-foreground">
+              {venue.address}, {venue.city}
+            </div>
+          )}
+        </div>
+        <div className="p-5">
+          <p className="text-lg font-bold">Как добраться</p>
+          <p className="mt-1 text-sm text-muted-foreground">От ближайшего удобного пункта маршрута</p>
+          <div className="mt-4 grid gap-2">
+            {modes.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setMode(id)}
+                className={cn(
+                  "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border px-3 py-3 text-left",
+                  mode === id ? "border-primary bg-primary-soft" : "border-border hover:bg-muted",
+                )}
+              >
+                <Icon className="h-4 w-4 shrink-0 text-primary" />
+                <span className="min-w-0 text-sm font-semibold">{label}</span>
+                <span className="shrink-0 text-sm font-bold">{times[id]}</span>
+              </button>
+            ))}
+          </div>
+          <a
+            href={routeUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground"
+          >
+            <Navigation className="h-4 w-4" /> Построить маршрут
+          </a>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function CheckoutModal({
+  venue,
+  eventId,
+  date,
+  time,
+  quantity,
+  complete,
+  onEventChange,
+  onDateChange,
+  onTimeChange,
+  onQuantityChange,
+  onSubmit,
+  onClose,
+}: {
+  venue: V;
+  eventId: string | null;
+  date: string;
+  time: string;
+  quantity: number;
+  complete: boolean;
+  onEventChange: (id: string) => void;
+  onDateChange: (value: string) => void;
+  onTimeChange: (value: string) => void;
+  onQuantityChange: (value: number) => void;
+  onSubmit: () => void;
+  onClose: () => void;
+}) {
+  const event = venue.events.find((item) => item.id === eventId) ?? venue.events[0];
+  const unitPrice = parsePrice(event?.price ?? venue.priceFrom ?? "0") ?? 0;
+
+  return (
+    <div className="fixed inset-0 z-[70] grid place-items-end bg-foreground/55 p-0 sm:place-items-center sm:p-5" role="dialog" aria-modal="true" aria-label="Оформление билетов" onMouseDown={onClose}>
+      <div className="max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-card p-5 shadow-card-hover sm:max-w-lg sm:rounded-2xl sm:p-6" onMouseDown={(e) => e.stopPropagation()}>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
+          <div className="min-w-0">
+            <p className="text-xl font-extrabold">{complete ? "Заказ оформлен" : "Выбор билетов"}</p>
+            <p className="mt-1 truncate text-sm text-muted-foreground">{venue.name}</p>
+          </div>
+          <button type="button" onClick={onClose} aria-label="Закрыть" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted"><X className="h-4 w-4" /></button>
+        </div>
+        {complete ? (
+          <div className="py-10 text-center">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-success text-success-foreground"><Check className="h-7 w-7" /></span>
+            <p className="mt-4 font-bold">Демо-заказ подтверждён</p>
+            <p className="mt-2 text-sm text-muted-foreground">Оплата не списывалась. В реальном заказе билет придёт на почту.</p>
+            <button onClick={onClose} className="mt-6 h-11 w-full rounded-xl bg-primary text-sm font-bold text-primary-foreground">Готово</button>
+          </div>
+        ) : (
+          <form className="mt-6 space-y-4" onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+            {venue.events.length ? (
+              <label className="block"><span className="text-xs font-semibold text-muted-foreground">Событие</span><select value={event?.id ?? ""} onChange={(e) => onEventChange(e.target.value)} className="mt-1 h-11 w-full rounded-xl border border-border bg-card px-3 text-sm font-semibold">{venue.events.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></label>
+            ) : null}
+            <div className="grid grid-cols-2 gap-3">
+              <label className="min-w-0"><span className="text-xs font-semibold text-muted-foreground">Дата</span><input required value={date} onChange={(e) => onDateChange(e.target.value)} className="mt-1 h-11 w-full min-w-0 rounded-xl border border-border bg-card px-3 text-sm" /></label>
+              <label className="min-w-0"><span className="text-xs font-semibold text-muted-foreground">Время</span><input required type="time" value={time} onChange={(e) => onTimeChange(e.target.value)} className="mt-1 h-11 w-full min-w-0 rounded-xl border border-border bg-card px-3 text-sm" /></label>
+            </div>
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-xl bg-muted p-3">
+              <div className="min-w-0"><p className="text-sm font-semibold">Количество</p><p className="text-xs text-muted-foreground">Электронные билеты</p></div>
+              <div className="flex shrink-0 items-center gap-3"><button type="button" onClick={() => onQuantityChange(Math.max(1, quantity - 1))} aria-label="Уменьшить" className="grid h-9 w-9 place-items-center rounded-full bg-card"><Minus className="h-4 w-4" /></button><span className="w-5 text-center font-bold">{quantity}</span><button type="button" onClick={() => onQuantityChange(Math.min(10, quantity + 1))} aria-label="Увеличить" className="grid h-9 w-9 place-items-center rounded-full bg-card"><Plus className="h-4 w-4" /></button></div>
+            </div>
+            <div className="flex items-center justify-between gap-4 border-t border-border pt-4"><span className="text-sm text-muted-foreground">Итого</span><span className="text-xl font-extrabold">{(unitPrice * quantity).toLocaleString("ru-RU")} руб.</span></div>
+            <button className="h-12 w-full rounded-xl bg-primary text-sm font-bold text-primary-foreground">Оформить демо-заказ</button>
+            <p className="text-center text-xs text-muted-foreground">Без оплаты и ввода банковской карты</p>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EventCard({ event, cta, onPurchase }: { event: V["events"][number]; cta: string; onPurchase: () => void }) {
   return (
     <li className="group min-w-0">
-      <a href="#" className="block">
+      <div className="block">
         <div className="relative overflow-hidden rounded-2xl bg-muted">
           <img
             src={event.poster}
@@ -1142,11 +1303,11 @@ function EventCard({ event, cta }: { event: V["events"][number]; cta: string }) 
           <h3 className="mt-1 line-clamp-2 text-sm font-bold leading-snug sm:text-base">{event.title}</h3>
           {event.extra ? <p className="mt-1 text-xs text-muted-foreground">{event.extra}</p> : null}
           <p className="mt-1.5 text-sm font-extrabold sm:text-base">{event.price}</p>
-          <button className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90 sm:text-sm">
+          <button onClick={onPurchase} className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90 sm:text-sm">
             {cta}
           </button>
         </div>
-      </a>
+      </div>
     </li>
   );
 }
@@ -1163,6 +1324,7 @@ function EventsBlock({
   setSelectedDate,
   dateStrip,
   filteredEvents,
+  onPurchase,
 }: {
   venue: V;
   cfg: C;
@@ -1173,6 +1335,7 @@ function EventsBlock({
   setSelectedDate: (v: string | null) => void;
   dateStrip: DateStripItem[];
   filteredEvents: V["events"];
+  onPurchase: (eventId: string) => void;
 }) {
   const [showCalendar, setShowCalendar] = useState(false);
   if (venue.events.length === 0) {
@@ -1247,7 +1410,7 @@ function EventsBlock({
       ) : (
         <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
           {filteredEvents.map((e) => (
-            <EventCard key={e.id} event={e} cta={cfg.cardCta} />
+            <EventCard key={e.id} event={e} cta={cfg.cardCta} onPurchase={() => onPurchase(e.id)} />
           ))}
         </ul>
       )}
@@ -1288,7 +1451,7 @@ function AdmissionBlock({ venue }: { venue: V }) {
   );
 }
 
-function TripsBlock({ venue, cfg }: { venue: V; cfg: C }) {
+function TripsBlock({ venue, cfg, onPurchase }: { venue: V; cfg: C; onPurchase: (eventId: string) => void }) {
   return (
     <section>
       <SectionTitle link="Всё расписание">Расписание рейсов</SectionTitle>
@@ -1315,7 +1478,7 @@ function TripsBlock({ venue, cfg }: { venue: V; cfg: C }) {
               </div>
               <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <p className="text-sm font-extrabold">{e.price}</p>
-                <button className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
+                <button onClick={() => onPurchase(e.id)} className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
                   {cfg.cardCta}
                 </button>
               </div>
@@ -1327,7 +1490,7 @@ function TripsBlock({ venue, cfg }: { venue: V; cfg: C }) {
   );
 }
 
-function ExcursionsBlock({ venue }: { venue: V }) {
+function ExcursionsBlock({ venue, onPurchase }: { venue: V; onPurchase: (eventId?: string) => void }) {
   return (
     <section>
       <SectionTitle link="Все экскурсии">Экскурсии, которые начинаются здесь</SectionTitle>
@@ -1349,7 +1512,7 @@ function ExcursionsBlock({ venue }: { venue: V }) {
               <h3 className="mt-2 line-clamp-2 text-sm font-bold">{e.title}</h3>
               <p className="text-xs text-muted-foreground">{e.duration}</p>
               <p className="mt-1 text-sm font-extrabold">{e.price}</p>
-              <button className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
+              <button onClick={() => onPurchase()} className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
                 Выбрать дату
               </button>
             </a>
@@ -1402,7 +1565,7 @@ function BookingBlock({ venue }: { venue: V }) {
   );
 }
 
-function LogisticsBlock({ venue, cfg }: { venue: V; cfg: C }) {
+function LogisticsBlock({ venue, cfg, onPurchase }: { venue: V; cfg: C; onPurchase: (eventId: string) => void }) {
   return (
     <section>
       <Card className="border-primary">
@@ -1428,7 +1591,7 @@ function LogisticsBlock({ venue, cfg }: { venue: V; cfg: C }) {
                 </div>
                 <div className="flex items-center justify-between gap-3 sm:justify-end">
                   <p className="text-sm font-extrabold">{e.price}</p>
-                  <button className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
+                  <button onClick={() => onPurchase(e.id)} className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
                     {cfg.cardCta}
                   </button>
                 </div>

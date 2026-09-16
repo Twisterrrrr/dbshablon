@@ -405,9 +405,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {hasTickets ? (
                 <button
                   type="button"
-                  onClick={() => {
-                    document.querySelector("#center")?.scrollIntoView({ behavior: "smooth" });
-                  }}
+                  onClick={() => openCheckout()}
                   className="group flex w-full shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
                 >
                   <span className="text-base font-extrabold text-foreground">от {venue.priceFrom}</span>
@@ -442,10 +440,10 @@ export function VenuePdp({ type }: { type: VenueType }) {
                   onPurchase={openCheckout}
                 />
               ) : null}
-              {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} /> : null}
-              {cfg.center === "excursions" ? <ExcursionsBlock venue={venue} /> : null}
+              {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} onPurchase={openCheckout} /> : null}
+              {cfg.center === "excursions" ? <ExcursionsBlock venue={venue} onPurchase={openCheckout} /> : null}
               {cfg.center === "booking" ? <BookingBlock venue={venue} /> : null}
-              {cfg.center === "logistics" ? <LogisticsBlock venue={venue} cfg={cfg} /> : null}
+              {cfg.center === "logistics" ? <LogisticsBlock venue={venue} cfg={cfg} onPurchase={openCheckout} /> : null}
             </div>
 
             {/* ===== Зоны клуба ===== */}
@@ -1453,7 +1451,7 @@ function AdmissionBlock({ venue }: { venue: V }) {
   );
 }
 
-function TripsBlock({ venue, cfg }: { venue: V; cfg: C }) {
+function TripsBlock({ venue, cfg, onPurchase }: { venue: V; cfg: C; onPurchase: (eventId: string) => void }) {
   return (
     <section>
       <SectionTitle link="Всё расписание">Расписание рейсов</SectionTitle>
@@ -1480,7 +1478,7 @@ function TripsBlock({ venue, cfg }: { venue: V; cfg: C }) {
               </div>
               <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <p className="text-sm font-extrabold">{e.price}</p>
-                <button className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
+                <button onClick={() => onPurchase(e.id)} className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
                   {cfg.cardCta}
                 </button>
               </div>
@@ -1492,7 +1490,7 @@ function TripsBlock({ venue, cfg }: { venue: V; cfg: C }) {
   );
 }
 
-function ExcursionsBlock({ venue }: { venue: V }) {
+function ExcursionsBlock({ venue, onPurchase }: { venue: V; onPurchase: (eventId?: string) => void }) {
   return (
     <section>
       <SectionTitle link="Все экскурсии">Экскурсии, которые начинаются здесь</SectionTitle>
@@ -1514,7 +1512,7 @@ function ExcursionsBlock({ venue }: { venue: V }) {
               <h3 className="mt-2 line-clamp-2 text-sm font-bold">{e.title}</h3>
               <p className="text-xs text-muted-foreground">{e.duration}</p>
               <p className="mt-1 text-sm font-extrabold">{e.price}</p>
-              <button className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
+              <button onClick={() => onPurchase()} className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
                 Выбрать дату
               </button>
             </a>
@@ -1567,7 +1565,7 @@ function BookingBlock({ venue }: { venue: V }) {
   );
 }
 
-function LogisticsBlock({ venue, cfg }: { venue: V; cfg: C }) {
+function LogisticsBlock({ venue, cfg, onPurchase }: { venue: V; cfg: C; onPurchase: (eventId: string) => void }) {
   return (
     <section>
       <Card className="border-primary">
@@ -1593,7 +1591,7 @@ function LogisticsBlock({ venue, cfg }: { venue: V; cfg: C }) {
                 </div>
                 <div className="flex items-center justify-between gap-3 sm:justify-end">
                   <p className="text-sm font-extrabold">{e.price}</p>
-                  <button className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
+                  <button onClick={() => onPurchase(e.id)} className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground">
                     {cfg.cardCta}
                   </button>
                 </div>

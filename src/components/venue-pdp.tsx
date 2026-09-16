@@ -28,6 +28,9 @@ import {
   Check,
   ChevronLeft,
   Mail,
+  Bus,
+  Footprints,
+  Navigation,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TYPE_CONFIG, TYPE_ORDER, TYPE_SLUG, VENUES, type VenueType, type Venue } from "@/lib/venue-data";
@@ -152,6 +155,22 @@ export function VenuePdp({ type }: { type: VenueType }) {
   const [selectedCat, setSelectedCat] = useState<number | null>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [subEmail, setSubEmail] = useState("");
+  const [checkoutEventId, setCheckoutEventId] = useState<string | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutDate, setCheckoutDate] = useState("");
+  const [checkoutTime, setCheckoutTime] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [orderComplete, setOrderComplete] = useState(false);
+
+  const openCheckout = (eventId?: string) => {
+    const event = venue.events.find((item) => item.id === eventId) ?? venue.events[0];
+    setCheckoutEventId(event?.id ?? null);
+    setCheckoutDate(event?.date ?? venue.nextDate ?? "Открытая дата");
+    setCheckoutTime(event?.time ?? "12:00");
+    setQuantity(1);
+    setOrderComplete(false);
+    setCheckoutOpen(true);
+  };
 
   // Следующие 14 дней для календаря
   const dateStrip = useMemo(() => {
@@ -417,6 +436,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                   setSelectedDate={setSelectedDate}
                   dateStrip={dateStrip}
                   filteredEvents={filteredEvents}
+                  onPurchase={openCheckout}
                 />
               ) : null}
               {cfg.center === "trips" ? <TripsBlock venue={venue} cfg={cfg} /> : null}
@@ -641,36 +661,13 @@ export function VenuePdp({ type }: { type: VenueType }) {
             </section>
 
             {/* ===== Информер по типу ===== */}
-            <section className="mt-12 grid gap-4 md:grid-cols-2">
+            <section className="mt-12">
               <Informer title={cfg.rulesTitle} items={cfg.rules} icon={ShieldCheck} />
-              <Informer
-                title="Как добраться"
-                items={[venue.metro, venue.transport, venue.parking]}
-                icon={Car}
-              />
             </section>
 
             {/* ===== Карта ===== */}
             <section className="mt-6">
-              <Card className="p-0 overflow-hidden">
-                <div className="relative h-52 bg-muted sm:h-64">
-                  <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(var(--color-border)_1px,transparent_1px),linear-gradient(90deg,var(--color-border)_1px,transparent_1px)] [background-size:38px_38px]" />
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                    <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-card">
-                      <MapPin className="h-5 w-5" />
-                    </span>
-                    <p className="mt-2 rounded-lg bg-background/90 px-3 py-1 text-xs font-semibold backdrop-blur">
-                      {venue.address}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-3 p-4">
-                  <p className="min-w-0 text-sm text-muted-foreground">{venue.metro}</p>
-                  <button className="rounded-xl border border-border px-4 py-2 text-xs font-bold transition-colors hover:bg-muted">
-                    Построить маршрут
-                  </button>
-                </div>
-              </Card>
+              <RouteMap venue={venue} />
 
               {cfg.wayToFind && venue.wayToFind ? (
                 <Card className="mt-4">
@@ -697,7 +694,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 <SectionTitle link="Все события">События на площадке</SectionTitle>
                 <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4">
                   {venue.events.map((e) => (
-                    <EventCard key={e.id} event={e} cta={cfg.cardCta} />
+                    <EventCard key={e.id} event={e} cta={cfg.cardCta} onPurchase={() => openCheckout(e.id)} />
                   ))}
                 </ul>
               </section>
@@ -871,7 +868,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                         </button>
                       ))}
                     </div>
-                    <button className="mt-3 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
+                    <button onClick={() => openCheckout()} className="mt-3 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90">
                       {cfg.stickyCta}
                     </button>
                     <p className="mt-2 text-center text-xs text-muted-foreground">{cfg.stickyHint}</p>
@@ -1013,7 +1010,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               <p className="truncate text-xs text-muted-foreground">{cfg.stickyHint}</p>
             </div>
           ) : null}
-          <button className={cn("shrink-0 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground", !hasTickets && "w-full")}>
+          <button onClick={() => hasTickets ? openCheckout() : document.querySelector("#center")?.scrollIntoView({ behavior: "smooth" })} className={cn("shrink-0 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground", !hasTickets && "w-full")}>
             {hasTickets ? "Купить билеты" : cfg.stickyCta}
           </button>
         </div>
@@ -1055,6 +1052,30 @@ export function VenuePdp({ type }: { type: VenueType }) {
           </p>
         </div>
       </footer>
+
+      {checkoutOpen ? (
+        <CheckoutModal
+          venue={venue}
+          eventId={checkoutEventId}
+          date={checkoutDate}
+          time={checkoutTime}
+          quantity={quantity}
+          complete={orderComplete}
+          onEventChange={(id) => {
+            setCheckoutEventId(id);
+            const event = venue.events.find((item) => item.id === id);
+            if (event) {
+              setCheckoutDate(event.date);
+              setCheckoutTime(event.time);
+            }
+          }}
+          onDateChange={setCheckoutDate}
+          onTimeChange={setCheckoutTime}
+          onQuantityChange={setQuantity}
+          onSubmit={() => setOrderComplete(true)}
+          onClose={() => setCheckoutOpen(false)}
+        />
+      ) : null}
 
       {/* ===== Lightbox галерея ===== */}
       {lightboxIdx !== null ? (
@@ -1118,10 +1139,10 @@ export function VenuePdp({ type }: { type: VenueType }) {
 type V = (typeof VENUES)[VenueType];
 type C = (typeof TYPE_CONFIG)[VenueType];
 
-function EventCard({ event, cta }: { event: V["events"][number]; cta: string }) {
+function EventCard({ event, cta, onPurchase }: { event: V["events"][number]; cta: string; onPurchase: () => void }) {
   return (
     <li className="group min-w-0">
-      <a href="#" className="block">
+      <div className="block">
         <div className="relative overflow-hidden rounded-2xl bg-muted">
           <img
             src={event.poster}
@@ -1142,11 +1163,11 @@ function EventCard({ event, cta }: { event: V["events"][number]; cta: string }) 
           <h3 className="mt-1 line-clamp-2 text-sm font-bold leading-snug sm:text-base">{event.title}</h3>
           {event.extra ? <p className="mt-1 text-xs text-muted-foreground">{event.extra}</p> : null}
           <p className="mt-1.5 text-sm font-extrabold sm:text-base">{event.price}</p>
-          <button className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90 sm:text-sm">
+          <button onClick={onPurchase} className="mt-3 w-full rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90 sm:text-sm">
             {cta}
           </button>
         </div>
-      </a>
+      </div>
     </li>
   );
 }
@@ -1163,6 +1184,7 @@ function EventsBlock({
   setSelectedDate,
   dateStrip,
   filteredEvents,
+  onPurchase,
 }: {
   venue: V;
   cfg: C;
@@ -1173,6 +1195,7 @@ function EventsBlock({
   setSelectedDate: (v: string | null) => void;
   dateStrip: DateStripItem[];
   filteredEvents: V["events"];
+  onPurchase: (eventId: string) => void;
 }) {
   const [showCalendar, setShowCalendar] = useState(false);
   if (venue.events.length === 0) {
@@ -1247,7 +1270,7 @@ function EventsBlock({
       ) : (
         <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
           {filteredEvents.map((e) => (
-            <EventCard key={e.id} event={e} cta={cfg.cardCta} />
+            <EventCard key={e.id} event={e} cta={cfg.cardCta} onPurchase={() => onPurchase(e.id)} />
           ))}
         </ul>
       )}

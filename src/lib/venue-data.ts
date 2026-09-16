@@ -345,6 +345,10 @@ export type Venue = {
   faq: { q: string; a: string }[];
   reviews: Review[];
   similar: { name: string; kind: string; metro: string; img: string }[];
+  catalogueUrl: string;
+  mapQuery: string;
+  travelTimes: { walk: string; transit: string; car: string };
+  dataNote?: string;
 };
 
 const baseSimilar = [

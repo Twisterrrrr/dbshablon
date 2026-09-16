@@ -9,13 +9,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Универсальная страница места Дайбилет: музей, театр, концертный зал, клуб, причал, парк, арена, гастроточка и точка сбора.",
+          "Каталог реальных площадок Дайбилет: музеи, театры, концертные залы, клубы, причалы, парки, арены и точки сбора.",
       },
       { property: "og:title", content: "Страницы мест Дайбилет — шаблоны карточек площадок" },
       {
         property: "og:description",
         content:
-          "Универсальная страница места Дайбилет: музей, театр, концертный зал, клуб, причал, парк, арена, гастроточка и точка сбора.",
+          "Каталог реальных площадок Дайбилет: музеи, театры, концертные залы, клубы, причалы, парки, арены и точки сбора.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -54,9 +54,8 @@ function CatalogPage() {
             Страницы мест на Дайбилет
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Один универсальный шаблон карточки места, который подстраивается под тип площадки:
-            афиша, входной билет, рейсы, бронь стола или точка встречи с гидом. Данные условные —
-            для демонстрации макета.
+             Музеи, театры, концертные площадки и другие места с адресами, афишей,
+             маршрутами и доступными билетами.
           </p>
         </section>
 
@@ -76,16 +75,16 @@ function CatalogPage() {
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  <span className="absolute left-3 top-3 rounded-lg bg-white px-2 py-1 text-xs font-semibold text-foreground">
+                  <span className="absolute left-3 top-3 rounded-lg bg-card px-2 py-1 text-xs font-semibold text-foreground">
                     {TYPE_CONFIG[t].label}
                   </span>
                   {venue.priceFrom ? (
-                    <span className="absolute bottom-3 left-3 rounded-lg bg-black/60 px-2 py-1 text-xs font-bold text-white backdrop-blur">
+                    <span className="absolute bottom-3 left-3 rounded-lg bg-foreground/70 px-2 py-1 text-xs font-bold text-background backdrop-blur">
                       от {venue.priceFrom}
                     </span>
                   ) : (
-                    <span className="absolute bottom-3 left-3 rounded-lg bg-black/60 px-2 py-1 text-xs font-bold text-white backdrop-blur">
-                      Вход свободный
+                    <span className="absolute bottom-3 left-3 rounded-lg bg-foreground/70 px-2 py-1 text-xs font-bold text-background backdrop-blur">
+                      {TYPE_CONFIG[t].stickyCta}
                     </span>
                   )}
                 </div>

@@ -1151,7 +1151,6 @@ function RouteMap({ venue }: { venue: V }) {
   const times = venue.travelTimes ?? { walk: "12 мин", transit: "18 мин", car: "24 мин" };
   const googleMode = mode === "walk" ? "walking" : mode === "transit" ? "transit" : "driving";
   const mapKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
-  const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
   const embedUrl = mapKey
     ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(mapKey)}&q=${encodeURIComponent(query)}`
     : null;
@@ -1164,7 +1163,7 @@ function RouteMap({ venue }: { venue: V }) {
           {embedUrl ? (
             <iframe
               title={`Карта: ${venue.name}`}
-              src={trackingId ? `${embedUrl}&channel=${encodeURIComponent(trackingId)}` : embedUrl}
+              src={embedUrl}
               className="h-full w-full border-0"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

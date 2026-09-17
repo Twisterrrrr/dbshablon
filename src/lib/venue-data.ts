@@ -795,7 +795,7 @@ export const VENUES: Record<VenueType, Venue> = {
     metro: "Пушкинская — 2 минуты пешком",
     transport: "Метро «Пушкинская», «Тверская» или «Чеховская»",
     parking: "Парковки рядом нет",
-    phone: "+7 (495) 000-00-00",
+    phone: "Указан в билете",
     site: "daibilet.ru",
     rating: null,
     cover: heroClub,

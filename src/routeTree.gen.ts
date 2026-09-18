@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VenuesIndexRouteImport } from './routes/venues.index'
 import { Route as VenuesArenaRouteImport } from './routes/venues.arena'
 import { Route as VenuesGastrotochkaRouteImport } from './routes/venues.gastrotochka'
 import { Route as VenuesKlubRouteImport } from './routes/venues.klub'
@@ -23,6 +24,11 @@ import { Route as VenuesTochkaSboraRouteImport } from './routes/venues.tochka-sb
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesIndexRoute = VenuesIndexRouteImport.update({
+  id: '/venues/',
+  path: '/venues/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VenuesArenaRoute = VenuesArenaRouteImport.update({
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/venues/prichal': typeof VenuesPrichalRoute
   '/venues/teatr': typeof VenuesTeatrRoute
   '/venues/tochka-sbora': typeof VenuesTochkaSboraRoute
+  '/venues/': typeof VenuesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/venues/prichal': typeof VenuesPrichalRoute
   '/venues/teatr': typeof VenuesTeatrRoute
   '/venues/tochka-sbora': typeof VenuesTochkaSboraRoute
+  '/venues': typeof VenuesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/venues/prichal': typeof VenuesPrichalRoute
   '/venues/teatr': typeof VenuesTeatrRoute
   '/venues/tochka-sbora': typeof VenuesTochkaSboraRoute
+  '/venues/': typeof VenuesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/venues/prichal'
     | '/venues/teatr'
     | '/venues/tochka-sbora'
+    | '/venues/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/venues/prichal'
     | '/venues/teatr'
     | '/venues/tochka-sbora'
+    | '/venues'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/venues/prichal'
     | '/venues/teatr'
     | '/venues/tochka-sbora'
+    | '/venues/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   VenuesPrichalRoute: typeof VenuesPrichalRoute
   VenuesTeatrRoute: typeof VenuesTeatrRoute
   VenuesTochkaSboraRoute: typeof VenuesTochkaSboraRoute
+  VenuesIndexRoute: typeof VenuesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -167,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/': {
+      id: '/venues/'
+      path: '/venues'
+      fullPath: '/venues/'
+      preLoaderRoute: typeof VenuesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/venues/arena': {
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   VenuesPrichalRoute: VenuesPrichalRoute,
   VenuesTeatrRoute: VenuesTeatrRoute,
   VenuesTochkaSboraRoute: VenuesTochkaSboraRoute,
+  VenuesIndexRoute: VenuesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

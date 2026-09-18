@@ -57,6 +57,12 @@ function CatalogPage() {
              Музеи, театры, концертные площадки и другие места с адресами, афишей,
              маршрутами и доступными билетами.
           </p>
+          <Link
+            to="/venues"
+            className="mt-4 inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          >
+            Все площадки с фильтрами <ChevronRight className="h-4 w-4" />
+          </Link>
         </section>
 
         <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

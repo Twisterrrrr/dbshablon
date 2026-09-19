@@ -7,11 +7,13 @@ import posterVocal from "@/assets/poster-vocal.jpg";
 
 export type VenueType =
   | "museum"
+  | "art_gallery"
   | "theater"
   | "concert_hall"
   | "club_bar"
   | "pier"
   | "outdoor"
+  | "landmark"
   | "sport"
   | "gastro"
   | "meeting_point";
@@ -52,7 +54,7 @@ export type TypeConfig = {
 
 export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
   museum: {
-    label: "Музей / галерея",
+    label: "Музеи",
     center: "admission",
     secondaryEvents: true,
     seatMap: false,
@@ -79,8 +81,35 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
       "Льготный билет по студенческому и пенсионному",
     ],
   },
+  art_gallery: {
+    label: "Арт-галереи",
+    center: "admission",
+    secondaryEvents: true,
+    seatMap: false,
+    zonesVip: false,
+    sectors: false,
+    fcdc: false,
+    exhibitions: true,
+    troupe: false,
+    acoustics: false,
+    kitchen: false,
+    hours: true,
+    wayToFind: false,
+    season: false,
+    visitPlanner: true,
+    heroCta: "Купить входной билет",
+    stickyCta: "Выбрать дату визита",
+    stickyHint: "Выставки и постоянная экспозиция",
+    cardCta: "Купить",
+    rulesTitle: "Правила посещения",
+    rules: [
+      "Фотосъёмка без вспышки и штатива разрешена",
+      "Для временных выставок может потребоваться отдельный билет",
+      "Льготный билет доступен при предъявлении документа",
+    ],
+  },
   theater: {
-    label: "Театр",
+    label: "Театры",
     center: "events",
     secondaryEvents: false,
     seatMap: true,
@@ -108,7 +137,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   concert_hall: {
-    label: "Концертный зал",
+    label: "Концертные залы",
     center: "events",
     secondaryEvents: false,
     seatMap: true,
@@ -135,7 +164,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   club_bar: {
-    label: "Клуб / бар",
+    label: "Клубы и бары",
     center: "events",
     secondaryEvents: false,
     seatMap: false,
@@ -162,7 +191,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   pier: {
-    label: "Причал / водные прогулки",
+    label: "Причалы",
     center: "trips",
     secondaryEvents: false,
     seatMap: false,
@@ -190,7 +219,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   outdoor: {
-    label: "Парк / достопримечательность",
+    label: "Парки",
     center: "excursions",
     secondaryEvents: true,
     seatMap: false,
@@ -216,8 +245,35 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
       "С собаками можно, на поводке",
     ],
   },
+  landmark: {
+    label: "Достопримечательности",
+    center: "excursions",
+    secondaryEvents: true,
+    seatMap: false,
+    zonesVip: false,
+    sectors: false,
+    fcdc: false,
+    exhibitions: false,
+    troupe: false,
+    acoustics: false,
+    kitchen: false,
+    hours: true,
+    wayToFind: false,
+    season: false,
+    visitPlanner: true,
+    heroCta: "Смотреть экскурсии",
+    stickyCta: "Смотреть экскурсии рядом",
+    stickyHint: "Экскурсии и прогулочные маршруты",
+    cardCta: "Подробнее",
+    rulesTitle: "Перед посещением",
+    rules: [
+      "Условия входа зависят от конкретного объекта",
+      "Для популярных маршрутов лучше выбрать время заранее",
+      "Проверяйте место встречи в электронном билете",
+    ],
+  },
   sport: {
-    label: "Спорт / арена",
+    label: "Спорт",
     center: "events",
     secondaryEvents: false,
     seatMap: false,
@@ -244,7 +300,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   gastro: {
-    label: "Гастроточка",
+    label: "Гастроточки",
     center: "booking",
     secondaryEvents: true,
     seatMap: false,
@@ -271,7 +327,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   meeting_point: {
-    label: "Точка сбора",
+    label: "Точки сбора",
     center: "logistics",
     secondaryEvents: false,
     seatMap: false,
@@ -378,8 +434,71 @@ const evt = (
 export const VENUES: Record<VenueType, Venue> = {
   museum: {
     type: "museum",
-    name: "Государственная Третьяковская галерея",
+    name: "Государственный музей изобразительных искусств имени А. С. Пушкина",
     kindLabel: "Музей",
+    age: "0+",
+    city: "Москва",
+    address: "ул. Волхонка, 12",
+    metro: "Кропоткинская — 3 минуты пешком",
+    transport: "Метро «Кропоткинская»",
+    parking: "Городские платные парковки на Волхонке и Пречистенке",
+    phone: "+7 (495) 697-95-78",
+    site: "pushkinmuseum.art",
+    rating: { value: 4.8, count: 312 },
+    cover: hall,
+    gallery: [heroClub, dinner, posterVocal],
+    about: [
+      "Главное здание музея хранит коллекцию зарубежного искусства от древних цивилизаций до европейской живописи и скульптуры.",
+      "На основную экспозицию стоит заложить не менее двух часов. Временные выставки могут проходить в соседних зданиях музейного квартала.",
+    ],
+    facts: [
+      ["Площадь экспозиции", "1 400 кв. м"],
+      ["Время визита", "1-2 часа"],
+      ["Аудиогид", "русский, английский"],
+      ["Доступность", "лифт и пандус"],
+    ],
+    priceFrom: "600 руб.",
+    nextDate: "сегодня",
+    admission: {
+      title: "Входной билет",
+      note: "Открытая дата: приходите в любой день в течение полугода",
+      options: [
+        { name: "Взрослый", price: "600 руб.", note: "Постоянная экспозиция" },
+        { name: "Льготный", price: "300 руб.", note: "Школьники, студенты, пенсионеры" },
+        { name: "Комплексный", price: "900 руб.", note: "Экспозиция + временные выставки" },
+      ],
+    },
+    exhibitions: [
+      { title: "Европейское искусство: новый взгляд", until: "До 15 ноября", img: posterVocal },
+      { title: "Археология и время", until: "До 3 декабря", img: hall },
+      { title: "Мастера старой Европы", until: "До 20 января", img: heroClub },
+    ],
+    hours: [
+      { day: "Понедельник", time: "выходной", closed: true },
+      { day: "Вторник - четверг", time: "11:00 - 20:00" },
+      { day: "Пятница", time: "11:00 - 22:00" },
+      { day: "Суббота - воскресенье", time: "10:00 - 21:00" },
+    ],
+    visitPlanner: { time: "1-2 часа", best: "будни до 14:00 - меньше людей", free: "третий четверг месяца - вход свободный" },
+    events: [
+      evt("m1", "Экскурсия «Шедевры главного здания»", "12 сентября, пт", "13:00", "Экскурсия", "800 руб.", posterVocal),
+      evt("m2", "Лекция «Искусство Древнего Египта»", "14 сентября, вс", "18:00", "Лекция", "500 руб.", hall),
+    ],
+    faq: [
+      { q: "Нужно ли выбирать время визита?", a: "Билет с открытой датой действует полгода, сеанс выбирать не нужно. В выходные вход по сеансам каждые полчаса." },
+      ...baseFaq,
+    ],
+    reviews: [
+      { author: "Марина", date: "28 августа", text: "Очень насыщенная коллекция. На главное здание лучше оставлять не меньше двух часов.", rating: 5 },
+      { author: "Илья", date: "17 августа", text: "Удобно добираться от метро, но на популярные выставки лучше брать билет заранее.", rating: 4 },
+    ],
+    similar: baseSimilar,
+  },
+
+  art_gallery: {
+    type: "art_gallery",
+    name: "Государственная Третьяковская галерея",
+    kindLabel: "Арт-галерея",
     age: "0+",
     city: "Москва",
     address: "Лаврушинский переулок, 10",
@@ -425,8 +544,8 @@ export const VENUES: Record<VenueType, Venue> = {
     ],
     visitPlanner: { time: "1-2 часа", best: "будни до 14:00 - меньше людей", free: "третий четверг месяца - вход свободный" },
     events: [
-      evt("m1", "Экскурсия «Своды и свет»", "12 сентября, пт", "13:00", "Экскурсия", "800 руб.", posterVocal),
-      evt("m2", "Лекция «Графика 90-х»", "14 сентября, вс", "18:00", "Лекция", "500 руб.", hall),
+      evt("ag1", "Экскурсия «Своды и свет»", "12 сентября, пт", "13:00", "Экскурсия", "800 руб.", posterVocal),
+      evt("ag2", "Лекция «Графика 90-х»", "14 сентября, вс", "18:00", "Лекция", "500 руб.", hall),
     ],
     faq: [
       { q: "Нужно ли выбирать время визита?", a: "Билет с открытой датой действует полгода, сеанс выбирать не нужно. В выходные вход по сеансам каждые полчаса." },
@@ -650,7 +769,7 @@ export const VENUES: Record<VenueType, Venue> = {
   outdoor: {
     type: "outdoor",
     name: "Центральный парк культуры и отдыха им. Горького",
-    kindLabel: "Достопримечательность",
+    kindLabel: "Парк",
     age: "0+",
     city: "Москва",
     address: "ул. Крымский Вал, 9",
@@ -689,6 +808,54 @@ export const VENUES: Record<VenueType, Venue> = {
     ],
     faq: [
       { q: "Нужен ли билет?", a: "Нет, вход в сад свободный. Билет нужен только на подъём на колокольню и на экскурсии." },
+      ...baseFaq,
+    ],
+    reviews: [],
+    similar: baseSimilar,
+  },
+
+  landmark: {
+    type: "landmark",
+    name: "Собор Василия Блаженного",
+    kindLabel: "Архитектурная достопримечательность",
+    age: "0+",
+    city: "Москва",
+    address: "Красная площадь, 7",
+    metro: "Охотный Ряд — 7 минут пешком",
+    transport: "Метро «Охотный Ряд», «Площадь Революции» или «Театральная»",
+    parking: "Собственной парковки нет; ближайшие городские парковки находятся за пределами Красной площади",
+    phone: "+7 (495) 698-33-04",
+    site: "shm.ru/museum/hvb",
+    rating: null,
+    cover: hall,
+    gallery: [heroClub, dinner, posterVocal],
+    about: [
+      "Собор Покрова Пресвятой Богородицы на Рву — один из главных архитектурных символов Москвы и часть музейного комплекса Государственного исторического музея.",
+      "Внутри можно увидеть систему отдельных церквей и переходов. На осмотр интерьеров и экспозиции стоит заложить около часа.",
+    ],
+    facts: [
+      ["Статус", "объект ЮНЕСКО"],
+      ["Время на месте", "45-90 минут"],
+      ["Лучшее время", "будни утром"],
+      ["Формат", "музей и памятник архитектуры"],
+    ],
+    priceFrom: "700 руб.",
+    nextDate: "сегодня",
+    visitPlanner: { time: "45-90 минут", best: "будни утром — меньше посетителей", free: "Красную площадь можно осмотреть свободно" },
+    excursions: [
+      { title: "Экскурсия по собору Василия Блаженного", duration: "2 часа", price: "от 700 руб.", img: heroClub },
+      { title: "Красная площадь и Китай-город", duration: "2,5 часа", price: "от 900 руб.", img: hall },
+      { title: "Исторический центр Москвы", duration: "4 часа", price: "от 1 900 руб.", img: dinner },
+    ],
+    events: [
+      evt("l1", "Экскурсия «Архитектура Красной площади»", "20 сентября, сб", "14:00", "Экскурсия", "от 700 руб.", posterSwing),
+    ],
+    hours: [
+      { day: "Ежедневно", time: "круглосуточно" },
+      { day: "Музей", time: "11:00 - 19:00" },
+    ],
+    faq: [
+      { q: "Нужен ли билет внутрь собора?", a: "Да, для посещения музейной экспозиции нужен билет. Осмотреть собор с Красной площади можно бесплатно." },
       ...baseFaq,
     ],
     reviews: [],
@@ -833,11 +1000,13 @@ export const VENUES: Record<VenueType, Venue> = {
 
 export const TYPE_ORDER: VenueType[] = [
   "museum",
+  "art_gallery",
   "theater",
   "concert_hall",
   "club_bar",
   "pier",
   "outdoor",
+  "landmark",
   "sport",
   "gastro",
   "meeting_point",
@@ -846,11 +1015,13 @@ export const TYPE_ORDER: VenueType[] = [
 /** Отдельная страница для каждого типа площадки */
 export const TYPE_SLUG = {
   museum: "/venues/muzey",
+  art_gallery: "/venues/art-galereya",
   theater: "/venues/teatr",
   concert_hall: "/venues/koncertnyy-zal",
   club_bar: "/venues/klub",
   pier: "/venues/prichal",
   outdoor: "/venues/park",
+  landmark: "/venues/dostoprimechatelnost",
   sport: "/venues/arena",
   gastro: "/venues/gastrotochka",
   meeting_point: "/venues/tochka-sbora",

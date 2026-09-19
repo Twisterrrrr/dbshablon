@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VenuesIndexRouteImport } from './routes/venues.index'
 import { Route as VenuesArenaRouteImport } from './routes/venues.arena'
+import { Route as VenuesArtGalereyaRouteImport } from './routes/venues.art-galereya'
+import { Route as VenuesDostoprimechatelnostRouteImport } from './routes/venues.dostoprimechatelnost'
 import { Route as VenuesGastrotochkaRouteImport } from './routes/venues.gastrotochka'
 import { Route as VenuesKlubRouteImport } from './routes/venues.klub'
 import { Route as VenuesKoncertnyyZalRouteImport } from './routes/venues.koncertnyy-zal'
@@ -36,6 +38,17 @@ const VenuesArenaRoute = VenuesArenaRouteImport.update({
   path: '/venues/arena',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VenuesArtGalereyaRoute = VenuesArtGalereyaRouteImport.update({
+  id: '/venues/art-galereya',
+  path: '/venues/art-galereya',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesDostoprimechatelnostRoute =
+  VenuesDostoprimechatelnostRouteImport.update({
+    id: '/venues/dostoprimechatelnost',
+    path: '/venues/dostoprimechatelnost',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const VenuesGastrotochkaRoute = VenuesGastrotochkaRouteImport.update({
   id: '/venues/gastrotochka',
   path: '/venues/gastrotochka',
@@ -80,6 +93,8 @@ const VenuesTochkaSboraRoute = VenuesTochkaSboraRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/venues/arena': typeof VenuesArenaRoute
+  '/venues/art-galereya': typeof VenuesArtGalereyaRoute
+  '/venues/dostoprimechatelnost': typeof VenuesDostoprimechatelnostRoute
   '/venues/gastrotochka': typeof VenuesGastrotochkaRoute
   '/venues/klub': typeof VenuesKlubRoute
   '/venues/koncertnyy-zal': typeof VenuesKoncertnyyZalRoute
@@ -93,6 +108,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/venues/arena': typeof VenuesArenaRoute
+  '/venues/art-galereya': typeof VenuesArtGalereyaRoute
+  '/venues/dostoprimechatelnost': typeof VenuesDostoprimechatelnostRoute
   '/venues/gastrotochka': typeof VenuesGastrotochkaRoute
   '/venues/klub': typeof VenuesKlubRoute
   '/venues/koncertnyy-zal': typeof VenuesKoncertnyyZalRoute
@@ -107,6 +124,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/venues/arena': typeof VenuesArenaRoute
+  '/venues/art-galereya': typeof VenuesArtGalereyaRoute
+  '/venues/dostoprimechatelnost': typeof VenuesDostoprimechatelnostRoute
   '/venues/gastrotochka': typeof VenuesGastrotochkaRoute
   '/venues/klub': typeof VenuesKlubRoute
   '/venues/koncertnyy-zal': typeof VenuesKoncertnyyZalRoute
@@ -122,6 +141,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/venues/arena'
+    | '/venues/art-galereya'
+    | '/venues/dostoprimechatelnost'
     | '/venues/gastrotochka'
     | '/venues/klub'
     | '/venues/koncertnyy-zal'
@@ -135,6 +156,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/venues/arena'
+    | '/venues/art-galereya'
+    | '/venues/dostoprimechatelnost'
     | '/venues/gastrotochka'
     | '/venues/klub'
     | '/venues/koncertnyy-zal'
@@ -148,6 +171,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/venues/arena'
+    | '/venues/art-galereya'
+    | '/venues/dostoprimechatelnost'
     | '/venues/gastrotochka'
     | '/venues/klub'
     | '/venues/koncertnyy-zal'
@@ -162,6 +187,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   VenuesArenaRoute: typeof VenuesArenaRoute
+  VenuesArtGalereyaRoute: typeof VenuesArtGalereyaRoute
+  VenuesDostoprimechatelnostRoute: typeof VenuesDostoprimechatelnostRoute
   VenuesGastrotochkaRoute: typeof VenuesGastrotochkaRoute
   VenuesKlubRoute: typeof VenuesKlubRoute
   VenuesKoncertnyyZalRoute: typeof VenuesKoncertnyyZalRoute
@@ -194,6 +221,20 @@ declare module '@tanstack/react-router' {
       path: '/venues/arena'
       fullPath: '/venues/arena'
       preLoaderRoute: typeof VenuesArenaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/art-galereya': {
+      id: '/venues/art-galereya'
+      path: '/venues/art-galereya'
+      fullPath: '/venues/art-galereya'
+      preLoaderRoute: typeof VenuesArtGalereyaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/dostoprimechatelnost': {
+      id: '/venues/dostoprimechatelnost'
+      path: '/venues/dostoprimechatelnost'
+      fullPath: '/venues/dostoprimechatelnost'
+      preLoaderRoute: typeof VenuesDostoprimechatelnostRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/venues/gastrotochka': {
@@ -258,6 +299,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   VenuesArenaRoute: VenuesArenaRoute,
+  VenuesArtGalereyaRoute: VenuesArtGalereyaRoute,
+  VenuesDostoprimechatelnostRoute: VenuesDostoprimechatelnostRoute,
   VenuesGastrotochkaRoute: VenuesGastrotochkaRoute,
   VenuesKlubRoute: VenuesKlubRoute,
   VenuesKoncertnyyZalRoute: VenuesKoncertnyyZalRoute,

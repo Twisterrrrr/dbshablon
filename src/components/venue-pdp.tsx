@@ -221,7 +221,16 @@ export function VenuePdp({ type }: { type: VenueType }) {
   const structuredData = useMemo(
     () => ({
       "@context": "https://schema.org",
-      "@type": type === "museum" ? "Museum" : type === "gastro" ? "Restaurant" : "Place",
+      "@type":
+        type === "museum"
+          ? "Museum"
+          : type === "art_gallery"
+            ? "ArtGallery"
+            : type === "landmark"
+              ? "LandmarksOrHistoricalBuildings"
+              : type === "gastro"
+                ? "Restaurant"
+                : "Place",
       name: venue.name,
       description: venue.about[0],
       address: {

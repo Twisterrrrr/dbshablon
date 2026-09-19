@@ -7,11 +7,13 @@ import posterVocal from "@/assets/poster-vocal.jpg";
 
 export type VenueType =
   | "museum"
+  | "art_gallery"
   | "theater"
   | "concert_hall"
   | "club_bar"
   | "pier"
   | "outdoor"
+  | "landmark"
   | "sport"
   | "gastro"
   | "meeting_point";
@@ -52,7 +54,7 @@ export type TypeConfig = {
 
 export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
   museum: {
-    label: "Музей / галерея",
+    label: "Музеи",
     center: "admission",
     secondaryEvents: true,
     seatMap: false,
@@ -79,8 +81,35 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
       "Льготный билет по студенческому и пенсионному",
     ],
   },
+  art_gallery: {
+    label: "Арт-галереи",
+    center: "admission",
+    secondaryEvents: true,
+    seatMap: false,
+    zonesVip: false,
+    sectors: false,
+    fcdc: false,
+    exhibitions: true,
+    troupe: false,
+    acoustics: false,
+    kitchen: false,
+    hours: true,
+    wayToFind: false,
+    season: false,
+    visitPlanner: true,
+    heroCta: "Купить входной билет",
+    stickyCta: "Выбрать дату визита",
+    stickyHint: "Выставки и постоянная экспозиция",
+    cardCta: "Купить",
+    rulesTitle: "Правила посещения",
+    rules: [
+      "Фотосъёмка без вспышки и штатива разрешена",
+      "Для временных выставок может потребоваться отдельный билет",
+      "Льготный билет доступен при предъявлении документа",
+    ],
+  },
   theater: {
-    label: "Театр",
+    label: "Театры",
     center: "events",
     secondaryEvents: false,
     seatMap: true,
@@ -108,7 +137,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   concert_hall: {
-    label: "Концертный зал",
+    label: "Концертные залы",
     center: "events",
     secondaryEvents: false,
     seatMap: true,
@@ -135,7 +164,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   club_bar: {
-    label: "Клуб / бар",
+    label: "Клубы и бары",
     center: "events",
     secondaryEvents: false,
     seatMap: false,
@@ -162,7 +191,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   pier: {
-    label: "Причал / водные прогулки",
+    label: "Причалы",
     center: "trips",
     secondaryEvents: false,
     seatMap: false,
@@ -190,7 +219,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   outdoor: {
-    label: "Парк / достопримечательность",
+    label: "Парки",
     center: "excursions",
     secondaryEvents: true,
     seatMap: false,
@@ -216,8 +245,35 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
       "С собаками можно, на поводке",
     ],
   },
+  landmark: {
+    label: "Достопримечательности",
+    center: "excursions",
+    secondaryEvents: true,
+    seatMap: false,
+    zonesVip: false,
+    sectors: false,
+    fcdc: false,
+    exhibitions: false,
+    troupe: false,
+    acoustics: false,
+    kitchen: false,
+    hours: true,
+    wayToFind: false,
+    season: false,
+    visitPlanner: true,
+    heroCta: "Смотреть экскурсии",
+    stickyCta: "Смотреть экскурсии рядом",
+    stickyHint: "Экскурсии и прогулочные маршруты",
+    cardCta: "Подробнее",
+    rulesTitle: "Перед посещением",
+    rules: [
+      "Условия входа зависят от конкретного объекта",
+      "Для популярных маршрутов лучше выбрать время заранее",
+      "Проверяйте место встречи в электронном билете",
+    ],
+  },
   sport: {
-    label: "Спорт / арена",
+    label: "Спорт",
     center: "events",
     secondaryEvents: false,
     seatMap: false,
@@ -244,7 +300,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   gastro: {
-    label: "Гастроточка",
+    label: "Гастроточки",
     center: "booking",
     secondaryEvents: true,
     seatMap: false,
@@ -271,7 +327,7 @@ export const TYPE_CONFIG: Record<VenueType, TypeConfig> = {
     ],
   },
   meeting_point: {
-    label: "Точка сбора",
+    label: "Точки сбора",
     center: "logistics",
     secondaryEvents: false,
     seatMap: false,

@@ -327,8 +327,8 @@ export function VenuePdp({ type }: { type: VenueType }) {
         </nav>
 
         {/* ===== Hero: баннер с вводными и кассой ===== */}
-        <section className="mt-4">
-          <div className="relative overflow-hidden rounded-2xl bg-muted pb-5 sm:pb-6 lg:aspect-[21/9] lg:max-h-[560px] lg:pb-0">
+        <section className="mt-4 lg:-mx-6 lg:mt-0 3xl:-mx-6">
+          <div className="relative overflow-hidden rounded-2xl bg-muted pb-5 sm:pb-6 lg:rounded-none lg:aspect-[21/9] lg:max-h-[560px] lg:pb-0">
             <img
               src={venue.cover}
               alt={`${venue.kindLabel}: ${venue.name}`}
@@ -341,7 +341,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {venue.gallery.length + 1} фото
             </span>
 
-            <div className="relative z-10 flex h-full flex-col justify-end gap-5 px-4 pt-24 sm:px-6 lg:flex-row lg:items-end lg:gap-8 lg:px-8 lg:pb-7">
+            <div className="relative z-10 flex h-full flex-col justify-end gap-5 px-4 pt-14 sm:px-6 sm:pt-20 lg:flex-row lg:items-end lg:gap-8 lg:px-8 lg:pb-7 lg:pt-0">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-foreground">

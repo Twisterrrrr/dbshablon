@@ -410,12 +410,12 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 </div>
               </div>
 
-              {/* Лаконичная покупка на фото — только там, где продаются билеты */}
+              {/* Лаконичная покупка на фото — только на десктопе; на мобильном убираем */}
               {hasTickets ? (
                 <button
                   type="button"
                   onClick={() => openCheckout()}
-                  className="group flex w-full shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
+                  className="group hidden shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:flex lg:min-w-[280px]"
                 >
                   <span className="text-base font-extrabold text-foreground">от {venue.priceFrom}</span>
                   <span className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">

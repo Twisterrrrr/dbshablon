@@ -479,19 +479,19 @@ export function VenuePdp({ type }: { type: VenueType }) {
               <section className="mt-12">
                 <SectionTitle>{cfg.sectors ? "Схема секторов" : "Схема зала"}</SectionTitle>
                 <Card className="mt-4 grid gap-5 sm:grid-cols-[minmax(0,1fr)_220px] sm:items-center">
-                  <div className="rounded-xl bg-muted p-6">
+                  <div className="min-w-0 overflow-hidden rounded-xl bg-muted p-4 sm:p-6">
                     <div className="mx-auto h-3 w-2/3 rounded-full bg-foreground/70" />
                     <p className="mt-2 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                       {cfg.sectors ? "Площадка" : "Сцена"}
                     </p>
-                    <div className="mt-5 space-y-2">
+                    <div className="mt-5 space-y-1.5 sm:space-y-2">
                       {[0, 1, 2, 3].map((row) => (
-                        <div key={row} className="flex justify-center gap-1.5">
+                        <div key={row} className="flex justify-center gap-1 sm:gap-1.5">
                           {Array.from({ length: 12 + row * 2 }).map((_, i) => (
                             <span
                               key={i}
                               className={cn(
-                                "h-2.5 w-2.5 rounded-[3px]",
+                                "h-2 w-2 min-w-0 shrink rounded-[3px] sm:h-2.5 sm:w-2.5",
                                 row < 2 ? "bg-primary/70" : row === 2 ? "bg-primary/40" : "bg-foreground/15",
                               )}
                             />
@@ -500,7 +500,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
                       ))}
                     </div>
                   </div>
-                  <ul className="space-y-3 text-sm">
+                  <ul className="min-w-0 space-y-3 text-sm">
                     {(cfg.sectors
                       ? [
                           ["Трибуна A - центр", "от 2 400 руб."],
@@ -514,10 +514,11 @@ export function VenuePdp({ type }: { type: VenueType }) {
                         ]
                     ).map(([k, v]) => (
                       <li key={k} className="flex items-center justify-between gap-3">
-                        <span className="min-w-0 text-muted-foreground">{k}</span>
+                        <span className="min-w-0 truncate text-muted-foreground">{k}</span>
                         <span className="shrink-0 font-bold">{v}</span>
                       </li>
                     ))}
+
                     <li>
                       <button className="mt-1 w-full rounded-xl border border-border py-2.5 text-xs font-bold transition-colors hover:bg-muted">
                         Открыть схему целиком

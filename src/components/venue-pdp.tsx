@@ -328,7 +328,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
 
         {/* ===== Hero: баннер с вводными и кассой ===== */}
         <section className="mt-4">
-          <div className="relative overflow-hidden rounded-2xl bg-muted pb-5 sm:pb-6 lg:aspect-[21/9] lg:max-h-[560px] lg:pb-0">
+          <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9] lg:max-h-[560px]">
             <img
               src={venue.cover}
               alt={`${venue.kindLabel}: ${venue.name}`}
@@ -342,7 +342,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
             </span>
 
             <div className="relative z-10 flex h-full flex-col justify-end gap-5 px-4 pt-24 sm:px-6 lg:flex-row lg:items-end lg:gap-8 lg:px-8 lg:pb-7">
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1 flex-col justify-end">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-foreground">
                     {venue.kindLabel}
@@ -410,12 +410,12 @@ export function VenuePdp({ type }: { type: VenueType }) {
                 </div>
               </div>
 
-              {/* Лаконичная покупка на фото — только там, где продаются билеты */}
+              {/* Лаконичная покупка на фото — только на десктопе; на мобильном убираем */}
               {hasTickets ? (
                 <button
                   type="button"
                   onClick={() => openCheckout()}
-                  className="group flex w-full shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:w-auto lg:min-w-[280px]"
+                  className="group hidden shrink-0 flex-col items-center gap-2 rounded-xl bg-card p-3 text-center shadow-card transition-shadow hover:shadow-card-hover lg:flex lg:min-w-[280px]"
                 >
                   <span className="text-base font-extrabold text-foreground">от {venue.priceFrom}</span>
                   <span className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-opacity group-hover:opacity-90">

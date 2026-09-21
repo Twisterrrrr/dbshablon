@@ -328,7 +328,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
 
         {/* ===== Hero: баннер с вводными и кассой ===== */}
         <section className="mt-4">
-          <div className="relative overflow-hidden rounded-2xl bg-muted pb-5 sm:pb-6 lg:aspect-[21/9] lg:max-h-[560px] lg:pb-0">
+          <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9] lg:max-h-[560px]">
             <img
               src={venue.cover}
               alt={`${venue.kindLabel}: ${venue.name}`}

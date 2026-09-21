@@ -341,7 +341,7 @@ export function VenuePdp({ type }: { type: VenueType }) {
               {venue.gallery.length + 1} фото
             </span>
 
-            <div className="relative z-10 flex h-full flex-col justify-end gap-5 px-4 pt-24 sm:px-6 lg:flex-row lg:items-end lg:gap-8 lg:px-8 lg:pb-7">
+            <div className="relative z-10 flex h-full flex-col justify-end gap-5 px-4 pt-24 pb-3 sm:px-6 sm:pb-4 lg:flex-row lg:items-end lg:gap-8 lg:px-8 lg:pb-7">
               <div className="flex min-w-0 flex-1 flex-col justify-end">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-lg bg-white px-2 py-1 text-xs font-semibold text-foreground">

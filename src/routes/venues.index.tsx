@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, MapPin, Search, Star, X } from "lucide-react";
+import { ChevronRight, LayoutGrid, List, MapPin, Search, Star, X } from "lucide-react";
 import {
   TYPE_CONFIG,
   TYPE_ORDER,
@@ -32,6 +32,7 @@ export const Route = createFileRoute("/venues/")({
 });
 
 type SortKey = "popular" | "rating" | "price";
+type ViewMode = "grid" | "list";
 
 function priceNum(v: string | null): number {
   if (!v) return Number.POSITIVE_INFINITY;
@@ -45,6 +46,7 @@ function VenuesListPage() {
   const [city, setCity] = useState("all");
   const [onlyTickets, setOnlyTickets] = useState(false);
   const [sort, setSort] = useState<SortKey>("popular");
+  const [view, setView] = useState<ViewMode>("grid");
 
   const cities = useMemo(
     () => Array.from(new Set(TYPE_ORDER.map((t) => VENUES[t].city))).sort(),
@@ -202,9 +204,35 @@ function VenuesListPage() {
           </div>
         </section>
 
-        <p className="mt-5 text-sm text-muted-foreground">
-          Найдено мест: <span className="font-semibold text-foreground">{results.length}</span>
-        </p>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Найдено мест: <span className="font-semibold text-foreground">{results.length}</span>
+          </p>
+          <div className="flex items-center gap-1 rounded-xl border border-border bg-card p-1">
+            <button
+              onClick={() => setView("grid")}
+              aria-pressed={view === "grid"}
+              aria-label="Плитка"
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${
+                view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              <span className="hidden sm:inline">Плитка</span>
+            </button>
+            <button
+              onClick={() => setView("list")}
+              aria-pressed={view === "list"}
+              aria-label="Список"
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${
+                view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <List className="h-4 w-4" />
+              <span className="hidden sm:inline">Список</span>
+            </button>
+          </div>
+        </div>
 
         {results.length === 0 ? (
           <div className="mt-6 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
@@ -219,6 +247,59 @@ function VenuesListPage() {
               Сбросить фильтры
             </button>
           </div>
+        ) : view === "list" ? (
+          <section className="mt-4 flex flex-col gap-3">
+            {results.map((t) => {
+              const venue = VENUES[t];
+              return (
+                <Link
+                  key={t}
+                  to={TYPE_SLUG[t]}
+                  className="group flex gap-3 overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover sm:gap-4 sm:p-4"
+                >
+                  <div className="relative h-24 w-28 shrink-0 overflow-hidden rounded-xl bg-muted sm:h-28 sm:w-44">
+                    <img
+                      src={venue.cover}
+                      alt={`${venue.kindLabel}: ${venue.name}`}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <span className="text-xs font-semibold text-primary">{TYPE_CONFIG[t].label}</span>
+                    <h2 className="mt-0.5 line-clamp-1 font-bold leading-snug group-hover:text-primary">
+                      {venue.name}
+                    </h2>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
+                      <span className="line-clamp-1">
+                        {venue.city}, {venue.address}
+                      </span>
+                    </p>
+                    <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 text-xs">
+                      {venue.rating ? (
+                        <span className="flex items-center gap-1 font-semibold">
+                          <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                          {venue.rating.value.toFixed(1).replace(".", ",")}
+                          <span className="font-normal text-muted-foreground">
+                            · {venue.rating.count} отзывов
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">Пока нет оценок</span>
+                      )}
+                      <span className="font-bold">
+                        {venue.priceFrom ? `от ${venue.priceFrom}` : TYPE_CONFIG[t].stickyCta}
+                      </span>
+                      <span className="ml-auto hidden items-center gap-0.5 font-semibold text-primary sm:flex">
+                        Открыть <ChevronRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </section>
         ) : (
           <section className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {results.map((t) => {

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, MapPin, Search, Star, X } from "lucide-react";
+import { ChevronRight, LayoutGrid, List, MapPin, Search, Star, X } from "lucide-react";
 import {
   TYPE_CONFIG,
   TYPE_ORDER,
@@ -32,6 +32,7 @@ export const Route = createFileRoute("/venues/")({
 });
 
 type SortKey = "popular" | "rating" | "price";
+type ViewMode = "grid" | "list";
 
 function priceNum(v: string | null): number {
   if (!v) return Number.POSITIVE_INFINITY;
@@ -45,6 +46,7 @@ function VenuesListPage() {
   const [city, setCity] = useState("all");
   const [onlyTickets, setOnlyTickets] = useState(false);
   const [sort, setSort] = useState<SortKey>("popular");
+  const [view, setView] = useState<ViewMode>("grid");
 
   const cities = useMemo(
     () => Array.from(new Set(TYPE_ORDER.map((t) => VENUES[t].city))).sort(),

@@ -204,9 +204,35 @@ function VenuesListPage() {
           </div>
         </section>
 
-        <p className="mt-5 text-sm text-muted-foreground">
-          Найдено мест: <span className="font-semibold text-foreground">{results.length}</span>
-        </p>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Найдено мест: <span className="font-semibold text-foreground">{results.length}</span>
+          </p>
+          <div className="flex items-center gap-1 rounded-xl border border-border bg-card p-1">
+            <button
+              onClick={() => setView("grid")}
+              aria-pressed={view === "grid"}
+              aria-label="Плитка"
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${
+                view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              <span className="hidden sm:inline">Плитка</span>
+            </button>
+            <button
+              onClick={() => setView("list")}
+              aria-pressed={view === "list"}
+              aria-label="Список"
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${
+                view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <List className="h-4 w-4" />
+              <span className="hidden sm:inline">Список</span>
+            </button>
+          </div>
+        </div>
 
         {results.length === 0 ? (
           <div className="mt-6 rounded-2xl border border-dashed border-border bg-card p-10 text-center">

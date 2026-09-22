@@ -150,12 +150,12 @@ function VenuesListPage() {
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex min-w-0 max-w-full items-center gap-2 text-sm">
               <span className="text-muted-foreground">Город</span>
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="rounded-xl border border-border bg-card px-3 py-1.5 text-sm font-semibold outline-none"
+                className="min-w-0 max-w-full truncate rounded-xl border border-border bg-card px-3 py-1.5 text-sm font-semibold outline-none"
               >
                 <option value="all">Все города</option>
                 {cities.map((c) => (
@@ -166,12 +166,12 @@ function VenuesListPage() {
               </select>
             </label>
 
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex min-w-0 max-w-full items-center gap-2 text-sm">
               <span className="text-muted-foreground">Сортировка</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
-                className="rounded-xl border border-border bg-card px-3 py-1.5 text-sm font-semibold outline-none"
+                className="min-w-0 max-w-full truncate rounded-xl border border-border bg-card px-3 py-1.5 text-sm font-semibold outline-none"
               >
                 <option value="popular">По умолчанию</option>
                 <option value="rating">Сначала с высоким рейтингом</option>

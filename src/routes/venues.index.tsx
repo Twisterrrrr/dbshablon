@@ -248,54 +248,42 @@ function VenuesListPage() {
             </button>
           </div>
         ) : view === "list" ? (
-          <section className="mt-4 flex flex-col gap-3">
+          <section className="mt-4 flex flex-col gap-2">
             {results.map((t) => {
               const venue = VENUES[t];
               return (
                 <Link
                   key={t}
                   to={TYPE_SLUG[t]}
-                  className="group flex gap-3 overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover sm:gap-4 sm:p-4"
+                  className="group flex items-start gap-3 rounded-2xl border border-border bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover sm:gap-4 sm:p-4"
                 >
-                  <div className="relative h-24 w-28 shrink-0 overflow-hidden rounded-xl bg-muted sm:h-28 sm:w-44">
-                    <img
-                      src={venue.cover}
-                      alt={`${venue.kindLabel}: ${venue.name}`}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="text-xs font-semibold text-primary">{TYPE_CONFIG[t].label}</span>
-                    <h2 className="mt-0.5 line-clamp-1 font-bold leading-snug group-hover:text-primary">
-                      {venue.name}
-                    </h2>
-                    <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
-                      <span className="line-clamp-1">
-                        {venue.city}, {venue.address}
-                      </span>
-                    </p>
-                    <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="shrink-0 text-xs font-semibold text-primary">{TYPE_CONFIG[t].label}</span>
                       {venue.rating ? (
-                        <span className="flex items-center gap-1 font-semibold">
+                        <span className="flex shrink-0 items-center gap-1 text-xs font-semibold">
                           <Star className="h-3.5 w-3.5 fill-primary text-primary" />
                           {venue.rating.value.toFixed(1).replace(".", ",")}
-                          <span className="font-normal text-muted-foreground">
-                            · {venue.rating.count} отзывов
-                          </span>
                         </span>
+                      ) : null}
+                    </div>
+                    <h2 className="mt-1 font-bold leading-snug group-hover:text-primary">{venue.name}</h2>
+                    <p className="mt-1 flex items-start gap-1.5 text-xs text-muted-foreground">
+                      <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                      <span>{venue.city}, {venue.address}</span>
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                      {venue.rating ? (
+                        <span className="text-muted-foreground">{venue.rating.count} отзывов</span>
                       ) : (
                         <span className="text-muted-foreground">Пока нет оценок</span>
                       )}
                       <span className="font-bold">
                         {venue.priceFrom ? `от ${venue.priceFrom}` : TYPE_CONFIG[t].stickyCta}
                       </span>
-                      <span className="ml-auto hidden items-center gap-0.5 font-semibold text-primary sm:flex">
-                        Открыть <ChevronRight className="h-3.5 w-3.5" />
-                      </span>
                     </div>
                   </div>
+                  <ChevronRight className="mt-1 h-5 w-5 shrink-0 self-center text-muted-foreground transition-colors group-hover:text-primary" />
                 </Link>
               );
             })}
